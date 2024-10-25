@@ -10,7 +10,7 @@ export const App = () => {
         <p className="font-lg font-bold">ClipWise</p>
       </div>
       <div className="flex w-full justify-center">
-        <button className="border rounded-lg border-blue-600 bg-blue-300 flex p-1 px-2 gap-x-2">
+        <button className="border rounded-lg border-blue-600 bg-blue-300 flex p-1 px-2 gap-x-2 items-center">
           <img className="display-inline h-4" src={Play} alt="play" />
           start
         </button>
