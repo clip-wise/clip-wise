@@ -4,5 +4,8 @@
   "version": "1.0",
   "name": "clip-wise",
   "description": "A chrome extension that simplifies the learning process on YouTube",
-  "author": ""
+  "author": "",
+  "action": {
+    "default_popup": "index.html"
+  }
 }
