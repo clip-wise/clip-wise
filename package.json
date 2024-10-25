@@ -1,0 +1,24 @@
+{
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yc24-youtubefocus/clip-wise"
+  },
+  "name": "clip-wise",
+  "description": "A chrome extension that simplifies the learning process on YouTube",
+  "version": "0.0.1",
+  "keywords": [
+    "extension",
+    "browser-extension",
+    "web-extension"
+  ],
+  "scripts": {
+    "dev": "extension dev",
+    "start": "extension start",
+    "build": "extension build"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "extension": "latest"
+  }
+}

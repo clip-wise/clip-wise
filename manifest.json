@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/chrome-manifest.json",
+  "manifest_version": 3,
+  "version": "1.0",
+  "name": "clip-wise",
+  "description": "A chrome extension that simplifies the learning process on YouTube",
+  "author": ""
+}
