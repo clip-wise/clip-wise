@@ -4,8 +4,15 @@
   "version": "1.0",
   "name": "clip-wise",
   "description": "A chrome extension that simplifies the learning process on YouTube",
+  "permissions": ["activeTab", "scripting"],
   "author": "",
   "action": {
     "default_popup": "index.html"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*"],
+      "js": ["./src/content-script.tsx"]
+    }
+  ]
 }
