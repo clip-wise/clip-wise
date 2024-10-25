@@ -4,7 +4,7 @@ import Play from "../public/images/play.svg";
 
 export const App = () => {
   return (
-    <div className="flex flex-col justify-between h-32 w-28 p-3">
+    <div className="flex flex-col justify-between h-32 w-28 p-3 bg-blue-100">
       <div className="flex flex-col items-center gap-x-2 w-full mb-auto">
         <img className="h-12" src={Logo} alt="logo" />
         <p className="font-lg font-bold">ClipWise</p>
