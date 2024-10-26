@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import YoutubeVideoId from './utils/getYoutubeVideoId';
-import { useApiKey } from './hooks/useApiKey';
-import ApiKeyInput from './components/ApiKeyInput/index';
-import './SidePanelContent.css';
-import NavigationBar from './components/NavigationBar/index';
-import ErrorMessage from './components/ErrorMessage';
-import MainContent from './components/MainContent';
-import CaptionSection from './components/CaptionSection';
-import { Captions, SkipTime } from './types';
+import React, { useEffect, useState } from "react";
+import YoutubeVideoId from "./utils/getYoutubeVideoId";
+import { useApiKey } from "./hooks/useApiKey";
+import ApiKeyInput from "./components/ApiKeyInput/index";
+import "./SidePanelContent.css";
+import NavigationBar from "./components/NavigationBar/index";
+import ErrorMessage from "./components/ErrorMessage";
+import MainContent from "./components/MainContent";
+import CaptionSection from "./components/CaptionSection";
+import { Captions, SkipTime } from "./types";
 
 const fn = (skipTimes: SkipTime[]) => {
   if (!(window as any).skipTimesTimer) {
@@ -15,7 +15,7 @@ const fn = (skipTimes: SkipTime[]) => {
     (window as any).skipTimesTimer = setInterval(() => {
       const skipTimes = (window as any).skipTimes as SkipTime[];
       const video = document.querySelector(
-        '.html5-video-player'
+        ".html5-video-player"
       ) as HTMLVideoElement;
 
       const currentTime = (video as any).getCurrentTime();
@@ -47,7 +47,7 @@ const SidePanelContent = () => {
       target: { tabId: activeTabId },
       func: fn,
       args: [skipTimes],
-      world: 'MAIN',
+      world: "MAIN",
     });
   };
 
@@ -60,8 +60,8 @@ const SidePanelContent = () => {
   }, []);
 
   const handleCallback = async (message: any, sender: any, reply: any) => {
-    if (message.type === 'captions-to-skip') {
-      console.log('message-data', message.data);
+    if (message.type === "captions-to-skip") {
+      console.log("message-data", message.data);
       if (message.data?.length !== 0) {
         const responseData = (message.data?.response || message.data).map(
           (v: any) => ({
@@ -73,7 +73,7 @@ const SidePanelContent = () => {
           data: responseData,
           loading: false,
         });
-        console.log('Active tab', activeTab?.id);
+        console.log("Active tab", activeTab?.id);
         if (activeTab?.id) {
           setSkipTimes(activeTab?.id, responseData);
         }
@@ -92,12 +92,12 @@ const SidePanelContent = () => {
   }, [activeTab?.id]);
 
   const handleStart = async () => {
-    const videoId = YoutubeVideoId(activeTab?.url || '');
+    const videoId = YoutubeVideoId(activeTab?.url || "");
     if (videoId) {
       chrome.runtime.sendMessage(
-        { type: 'fetch-data', videoId, apiKey },
+        { type: "fetch-data", videoId, apiKey },
         (response) => {
-          console.log('received user data', response);
+          console.log("received user data", response);
         }
       );
       setCaptions({ loading: true, data: [] });
@@ -107,22 +107,27 @@ const SidePanelContent = () => {
       try {
         await chrome.scripting.executeScript({
           target: { tabId: activeTab.id },
-          files: ['scripts/content-script.js'],
-          world: 'MAIN',
+          files: ["scripts/content-script.js"],
+          world: "MAIN",
         });
         setError(null);
       } catch (error) {
-        console.error('Error injecting script:', error);
+        console.error("Error injecting script:", error);
         setError(`An error occurred while starting the extension: ${error}`);
       }
     } else {
       setError(
-        'Please navigate to a YouTube video page to use this extension.'
+        "Please navigate to a YouTube video page to use this extension."
       );
     }
   };
 
   const handleActionClick = (action: string) => {
+    if (action === "clip") {
+      handleStart();
+      return;
+    }
+
     // Implement the logic for each action
     console.log(`Action clicked: ${action}`);
     chrome.runtime.sendMessage({ type: action });
@@ -134,12 +139,11 @@ const SidePanelContent = () => {
 
   return (
     <>
-      <NavigationBar title='ClipWise' onClearApiKey={clearApiKey} />
-      <div className='side-panel-content'>
+      <NavigationBar title="ClipWise" onClearApiKey={clearApiKey} />
+      <div className="side-panel-content">
         {error && <ErrorMessage message={error} />}
         <MainContent onActionClick={handleActionClick} />
-        <button onClick={handleStart}>Get Captions</button>
-        <div className='captions-section'>
+        <div className="captions-section">
           {captions.loading ? (
             <p>Processing...</p>
           ) : (
