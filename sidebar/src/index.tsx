@@ -63,10 +63,12 @@ const SidePanelContent = () => {
     if (message.type === "captions-to-skip") {
       console.log("message-data", message.data);
       if (message.data?.length !== 0) {
-        const responseData = message.data.map((v: any) => ({
-          start: parseFloat(v.start),
-          end: parseFloat(v.end),
-        }));
+        const responseData = (message.data?.response || message.data).map(
+          (v: any) => ({
+            start: parseFloat(v.start),
+            end: parseFloat(v.end),
+          })
+        );
         setCaptions({
           data: responseData,
           loading: false,
