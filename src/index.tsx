@@ -7,7 +7,7 @@ import NavigationBar from "./components/NavigationBar/index";
 import ErrorMessage from "./components/ErrorMessage";
 import MainContent from "./components/MainContent";
 import { Captions, SkipTime } from "./types";
-import ProcessingIcon from "./components/ProcessingIcon";
+import ProcessingIcon from "./components/ProcessIcon";
 import { Actions, ChromeMessageTypes } from "../constants";
 import TakeNotes from "./components/TakeNotes";
 
