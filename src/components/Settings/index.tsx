@@ -44,6 +44,7 @@ export const Settings: React.FC<ApiKeyInputProps> = ({
       ai: selectedAI,
       apiKey,
     });
+    closeSettings();
   };
 
   return (
