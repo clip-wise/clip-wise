@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import YoutubeVideoId from './utils/getYoutubeVideoId';
 import { useApiKey } from './hooks/useApiKey';
-import { ApiKeyInput } from './components/ApiKeyInput';
+import ApiKeyInput from './components/ApiKeyInput/index';
 import './SidePanelContent.css';
 import NavigationBar from './components/NavigationBar/index';
 import ErrorMessage from './components/ErrorMessage';
 import MainContent from './components/MainContent';
-import ProcessingIndicator from './components/ProcessingIndicator';
-
-type SkipTime = { start: number; end: number };
+import CaptionSection from './components/CaptionSection';
+import { Captions, SkipTime } from './types';
 
 const fn = (skipTimes: SkipTime[]) => {
   if (!(window as any).skipTimesTimer) {
@@ -36,10 +35,7 @@ const fn = (skipTimes: SkipTime[]) => {
 
 const SidePanelContent = () => {
   const [activeTab, setActiveTab] = useState<chrome.tabs.Tab | null>(null);
-  const [captions, setCaptions] = useState<{
-    loading: boolean;
-    data: SkipTime[];
-  }>({
+  const [captions, setCaptions] = useState<Captions>({
     loading: false,
     data: [],
   });
@@ -129,6 +125,7 @@ const SidePanelContent = () => {
   const handleActionClick = (action: string) => {
     // Implement the logic for each action
     console.log(`Action clicked: ${action}`);
+    chrome.runtime.sendMessage({ type: action });
   };
 
   if (!hasApiKey) {
@@ -141,7 +138,16 @@ const SidePanelContent = () => {
       <div className='side-panel-content'>
         {error && <ErrorMessage message={error} />}
         <MainContent onActionClick={handleActionClick} />
-        {captions.loading && <ProcessingIndicator />}
+        <button onClick={handleStart}>Get Captions</button>
+        <div className='captions-section'>
+          {captions.loading ? (
+            <p>Processing...</p>
+          ) : (
+            captions.data.map((caption, index) => (
+              <p key={index}>{JSON.stringify(caption)}...</p>
+            ))
+          )}
+        </div>
       </div>
     </>
   );

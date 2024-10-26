@@ -30,10 +30,6 @@
   transition: transform 0.3s ease;
 }
 
-.settings-dropdown button:hover {
-  transform: rotate(90deg);
-}
-
 .dropdown-content {
   position: absolute;
   right: 0;
