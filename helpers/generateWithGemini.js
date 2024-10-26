@@ -19,7 +19,7 @@ I will run JSON.parse on the response and skip the promotional segments while pl
         ],
       },
       generationConfig: {
-        temperature: 1,
+        temperature: 0.8,
         topK: 64,
         topP: 0.95,
         maxOutputTokens: 8192,
