@@ -10,19 +10,31 @@ const SidePanelContent = () => {
         setActiveTab(tabs[0]);
       }
     });
+    // Listen to response from background.js
+    chrome.runtime.onMessage.addListener((message, sender, reply) => {
+      if (message.type === "captions-to-skip") {
+        console.log("message", message);
+      }
+    });
   }, []);
 
   const handleClick = async () => {
+    chrome.runtime.sendMessage(
+      { type: "fetch-data", videoId: "g4g2YUtjh9g" },
+      (response) => {
+        // 3. Got an asynchronous response with the data from the service worker
+        console.log("received user data", response);
+      }
+    );
+
     if (activeTab?.id) {
       try {
         console.log("activeTab.id", activeTab.id);
-        alert("executing script");
         await chrome.scripting.executeScript({
           target: { tabId: activeTab.id },
           files: ["scripts/content-script.js"],
           world: "MAIN",
         });
-        alert("executed script");
       } catch (error) {
         console.error("Error injecting script:", error);
         alert(`An error occurred. Please try again. ${error}`);

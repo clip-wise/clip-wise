@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      youtube-captions-scraper:
+        specifier: ^2.0.3
+        version: 2.0.3
     devDependencies:
       '@types/react':
         specifier: ^18.3.12
@@ -1712,6 +1716,9 @@ packages:
     resolution: {integrity: sha512-gvVijfZvn7R+2qyPX8mAuKcFGDf6Nc61GdvGafQsHL0sBIxfKzA+usWn4GFC/bk+QdwPUD4kWFJLhElipq+0VA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
+  lodash@4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
+
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
@@ -2541,6 +2548,9 @@ packages:
     resolution: {integrity: sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ==}
     engines: {node: '>=0.10.0'}
 
+  striptags@3.2.0:
+    resolution: {integrity: sha512-g45ZOGzHDMe2bdYMdIvdAfCQkCTDMGBazSw1ypMowwGIee7ZQ5dU0rBJ8Jqgl+jAKIv4dbeE1jscZq9wid1Tkw==}
+
   style-loader@3.3.4:
     resolution: {integrity: sha512-0WqXzrsMTyb8yjZJHDqwmnwRJvhALK9LfRtRc6B4UTWe8AijYLZYZ9thuJTZc2VfQWINADW/j+LiJnfy2RoC1w==}
     engines: {node: '>= 12.13.0'}
@@ -2872,6 +2882,9 @@ packages:
   yocto-queue@1.1.1:
     resolution: {integrity: sha512-b4JR1PFR10y1mKjhHY9LaGo6tmrgjit7hxVIeAmyMw3jegXR4dhYqLaQF5zMXZxY7tLpMyJeLjr1C4rLmkVe8g==}
     engines: {node: '>=12.20'}
+
+  youtube-captions-scraper@2.0.3:
+    resolution: {integrity: sha512-XT6U5wFq35P5G99M+2uwNzJFkmGUrb38u8lMMQkv9PpfTOtG8Lpotka7jEqbDnQBshDw6/hgLQV597/tldiyUg==}
 
 snapshots:
 
@@ -4501,8 +4514,7 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  he@1.2.0:
-    optional: true
+  he@1.2.0: {}
 
   hpack.js@2.1.6:
     dependencies:
@@ -4775,6 +4787,8 @@ snapshots:
     dependencies:
       p-locate: 6.0.0
     optional: true
+
+  lodash@4.17.21: {}
 
   loose-envify@1.4.0:
     dependencies:
@@ -5677,6 +5691,8 @@ snapshots:
 
   strip-json-comments@2.0.1: {}
 
+  striptags@3.2.0: {}
+
   style-loader@3.3.4(webpack@5.92.1(@swc/core@1.7.39)):
     dependencies:
       webpack: 5.92.1(@swc/core@1.7.39)
@@ -6048,3 +6064,12 @@ snapshots:
 
   yocto-queue@1.1.1:
     optional: true
+
+  youtube-captions-scraper@2.0.3:
+    dependencies:
+      axios: 1.7.7
+      he: 1.2.0
+      lodash: 4.17.21
+      striptags: 3.2.0
+    transitivePeerDependencies:
+      - debug
