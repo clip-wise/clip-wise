@@ -4,7 +4,7 @@
   "version": "1.0",
   "name": "ClipWise",
   "description": "A chrome extension that simplifies the learning process on YouTube",
-  "permissions": ["activeTab", "scripting", ""],
+  "permissions": ["activeTab", "scripting", "tabs"],
   "author": "",
   "host_permissions": ["https://*/*"],
   "chromium:action": {

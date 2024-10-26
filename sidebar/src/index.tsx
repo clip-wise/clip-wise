@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import YoutubeVideoId from "../utils/getYoutubeVideoId";
 
 const SidePanelContent = () => {
   const [activeTab, setActiveTab] = useState<chrome.tabs.Tab | null>(null);
+  const [captions, setCaptions] = useState<any[]>([]);
 
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -12,20 +14,23 @@ const SidePanelContent = () => {
     });
     // Listen to response from background.js
     chrome.runtime.onMessage.addListener((message, sender, reply) => {
-      if (message.type === "captions-to-skip") {
-        console.log("message", message);
+      if (message.type === "captions-to-skip" && message.data) {
+        setCaptions(message.data);
       }
     });
   }, []);
 
   const handleClick = async () => {
-    chrome.runtime.sendMessage(
-      { type: "fetch-data", videoId: "g4g2YUtjh9g" },
-      (response) => {
-        // 3. Got an asynchronous response with the data from the service worker
-        console.log("received user data", response);
-      }
-    );
+    const videoId = YoutubeVideoId(activeTab?.url || "");
+    if (videoId) {
+      chrome.runtime.sendMessage(
+        { type: "fetch-data", videoId },
+        (response) => {
+          // 3. Got an asynchronous response with the data from the service worker
+          console.log("received user data", response);
+        }
+      );
+    }
 
     if (activeTab?.id) {
       try {
@@ -48,6 +53,12 @@ const SidePanelContent = () => {
     <div>
       <h1>SidePanel Content</h1>
       <button onClick={handleClick}>Click me</button>
+      <hr />
+      <div>
+        {captions.map((caption, index) => (
+          <p key={index}>{caption.text.slice(0, 50)}...</p>
+        ))}
+      </div>
     </div>
   );
 };
