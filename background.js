@@ -25,7 +25,7 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
 
     // TODO: find captions to skip
 
-    const GOOGLE_API_KEY = "";
+    const GOOGLE_API_KEY = message.apiKey;
 
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`,

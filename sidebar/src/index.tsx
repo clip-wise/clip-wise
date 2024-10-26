@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import YoutubeVideoId from '../utils/getYoutubeVideoId';
-import { useApiKey } from './hooks/useApiKey';
-import { ApiKeyInput } from './components/ApiKeyInput';
-import './SidePanelContent.css';
+import React, { useEffect, useState } from "react";
+import YoutubeVideoId from "../utils/getYoutubeVideoId";
+import { useApiKey } from "./hooks/useApiKey";
+import { ApiKeyInput } from "./components/ApiKeyInput";
+import "./SidePanelContent.css";
 
 const SidePanelContent = () => {
   const [activeTab, setActiveTab] = useState<chrome.tabs.Tab | null>(null);
@@ -26,12 +26,12 @@ const SidePanelContent = () => {
   }, []);
 
   const handleStart = async () => {
-    const videoId = YoutubeVideoId(activeTab?.url || '');
+    const videoId = YoutubeVideoId(activeTab?.url || "");
     if (videoId) {
       chrome.runtime.sendMessage(
-        { type: 'fetch-data', videoId },
+        { type: "fetch-data", videoId, apiKey },
         (response) => {
-          console.log('received user data', response);
+          console.log("received user data", response);
         }
       );
     }
@@ -40,17 +40,17 @@ const SidePanelContent = () => {
       try {
         await chrome.scripting.executeScript({
           target: { tabId: activeTab.id },
-          files: ['scripts/content-script.js'],
-          world: 'MAIN',
+          files: ["scripts/content-script.js"],
+          world: "MAIN",
         });
         setError(null);
       } catch (error) {
-        console.error('Error injecting script:', error);
+        console.error("Error injecting script:", error);
         setError(`An error occurred while starting the extension: ${error}`);
       }
     } else {
       setError(
-        'Please navigate to a YouTube video page to use this extension.'
+        "Please navigate to a YouTube video page to use this extension."
       );
     }
   };
@@ -60,25 +60,25 @@ const SidePanelContent = () => {
   }
 
   return (
-    <div className='side-panel-content'>
-      <h1 className='title'>ClipWise</h1>
+    <div className="side-panel-content">
+      <h1 className="title">ClipWise</h1>
       {error && (
-        <div className='error-message' role='alert'>
+        <div className="error-message" role="alert">
           <strong>Error: </strong>
           <span>{error}</span>
         </div>
       )}
-      <div className='api-key-section'>
+      <div className="api-key-section">
         <p>API Key is set for OpenAI. You're ready to go!</p>
-        <button onClick={handleStart} className='start-button'>
+        <button onClick={handleStart} className="start-button">
           Start
         </button>
-        <button onClick={clearApiKey} className='change-key-button'>
+        <button onClick={clearApiKey} className="change-key-button">
           Change API Key
         </button>
       </div>
-      <hr className='divider' />
-      <div className='captions-section'>
+      <hr className="divider" />
+      <div className="captions-section">
         {captions.map((caption, index) => (
           <p key={index}>{JSON.stringify(caption)}...</p>
         ))}
