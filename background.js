@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
             parts: [
               {
                 text: `
-sYou are a helpful learning assistant. You are provided with the transcript of a youtube video including the timestamps. Go over the transcript and identify the part of the script that is not educational. It may be promotions, unuseful talks or random unrelated information.
+You are a helpful learning assistant. You are provided with the transcript of a youtube video including the timestamps. Go over the transcript and identify the part of the script that is not educational. It may be promotions, unuseful talks or random unrelated information.
 With that in mind, I need to know the parts of the video that can be skipped while learning.
 Return an array of start and end times that can be skipped without affecting the overall watch quality. Respond with valid JSON.`,
               },
