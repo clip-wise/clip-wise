@@ -8,7 +8,7 @@ import ErrorMessage from "./components/ErrorMessage";
 import MainContent from "./components/MainContent";
 import { Captions, SkipTime } from "./types";
 import ProcessingIcon from "./components/ProcessingIcon";
-import { ChromeMessageTypes } from "../constants";
+import { Actions, ChromeMessageTypes } from "../constants";
 import TakeNotes from "./components/TakeNotes";
 
 const fn = (skipTimes: SkipTime[]) => {
@@ -100,7 +100,7 @@ const SidePanelContent = () => {
     };
   }, [activeTab?.id]);
 
-  const handleStart = async () => {
+  const handleActionClip = async () => {
     const videoId = YoutubeVideoId(activeTab?.url || "");
     if (videoId) {
       chrome.runtime.sendMessage({
@@ -130,13 +130,19 @@ const SidePanelContent = () => {
     }
   };
 
+  const handleActionSummary = () => {
+    const videoId = YoutubeVideoId(activeTab?.url || "");
+
+    chrome.runtime.sendMessage({ type: ChromeMessageTypes.Summarize, videoId });
+  };
+
   const handleActionClick = (action: string) => {
-    if (action === "clip") {
-      handleStart();
+    if (action === Actions.Clip) {
+      handleActionClip();
       return;
     }
-    if (action === "summarize") {
-      chrome.runtime.sendMessage({ type: ChromeMessageTypes.Summarize });
+    if (action === Actions.Summary) {
+      handleActionSummary();
       return;
     }
     if (action === "take-notes") {
@@ -145,7 +151,7 @@ const SidePanelContent = () => {
     }
 
     // Implement the logic for each action
-    console.log(`Action clicked: ${action}`);
+    console.log(`Missing Handler for the Action: <bold>${action}</bold>`);
     chrome.runtime.sendMessage({ type: action });
   };
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { Actions } from "../../../constants";
 
 interface ActionButtonsProps {
   onActionClick: (action: string) => void;
@@ -11,28 +12,28 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
 }) => (
   <div className="action-buttons">
     <button
-      onClick={() => onActionClick("clip")}
+      onClick={() => onActionClick(Actions.Clip)}
       className="action-button"
       disabled={disableOptions}
     >
       Clip the video ✨
     </button>
     <button
-      onClick={() => onActionClick("take-notes")}
+      onClick={() => onActionClick(Actions.TakeNotes)}
       className="action-button"
       disabled={disableOptions}
     >
       Take Notes
     </button>
     <button
-      onClick={() => onActionClick("flashcards")}
+      onClick={() => onActionClick(Actions.FlashCards)}
       className="action-button"
       disabled={disableOptions}
     >
       Learn with Flashcards
     </button>
     <button
-      onClick={() => onActionClick("summary")}
+      onClick={() => onActionClick(Actions.Summary)}
       className="action-button"
       disabled={disableOptions}
     >

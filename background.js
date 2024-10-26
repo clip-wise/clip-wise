@@ -1,13 +1,13 @@
-import { getSubtitles } from "youtube-captions-scraper";
+import { getSubtitles } from 'youtube-captions-scraper';
 
-import { generateWithGemini } from "./helpers/generateWithGemini";
-import { generateWithGroq } from "./helpers/generateWithGroq";
-import { summarizeWithGemini } from "./helpers/summarizeWithGemini";
-import { ChromeMessageTypes } from "./constants";
+import { generateWithGemini } from './helpers/generateWithGemini';
+import { generateWithGroq } from './helpers/generateWithGroq';
+import { summarizeWithGemini } from './helpers/summarizeWithGemini';
+import { ChromeMessageTypes } from './constants';
 
 const isFirefoxLike =
-  process.env.EXTENSION_PUBLIC_BROWSER === "firefox" ||
-  process.env.EXTENSION_PUBLIC_BROWSER === "gecko-based";
+  process.env.EXTENSION_PUBLIC_BROWSER === 'firefox' ||
+  process.env.EXTENSION_PUBLIC_BROWSER === 'gecko-based';
 
 if (isFirefoxLike) {
   browser.browserAction.onClicked.addListener(() => {
@@ -26,11 +26,11 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
       videoID,
     });
 
-    console.log("captions", captions);
+    console.log('captions', captions);
 
     try {
       const { responseData, error } =
-        message.AI === "gemini"
+        message.AI === 'gemini'
           ? await generateWithGemini(message.apiKey, captions)
           : await generateWithGroq(message.apiKey, captions);
       chrome.runtime.sendMessage({
@@ -46,6 +46,7 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
       });
     }
   } else if (message.type == ChromeMessageTypes.Summarize) {
+    console.log("Summarize message", message);
     if (!message.videoId) return;
     const captions = await getSubtitles({
       videoID: message.videoId,
@@ -63,10 +64,10 @@ chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
   }
   const url = new URL(tab.url);
   // Enables the side panel on google.com
-  if (url?.origin === "https://www.youtube.com") {
+  if (url?.origin === 'https://www.youtube.com') {
     await chrome.sidePanel.setOptions({
       tabId,
-      path: "side_panel/default_path.html",
+      path: 'side_panel/default_path.html',
       enabled: true,
     });
   } else {
@@ -78,9 +79,9 @@ chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
 
     try {
       const response = await summarizeWithGemini(message.apiKey, captions);
-      console.log("Clip response", response);
+      console.log('Clip response', response);
     } catch (error) {
-      console.log("Clip error", error);
+      console.log('Clip error', error);
     }
   }
 });
