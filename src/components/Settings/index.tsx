@@ -5,12 +5,23 @@ import { useProviderConfig } from "../../hooks/useProviderConfig";
 
 interface ApiKeyInputProps {
   onSubmit: (apiKey: { ai: AIOptions; apiKey: string }) => void;
+  closeSettings: () => void;
 }
 
-export const Settings: React.FC<ApiKeyInputProps> = ({ onSubmit }) => {
+export const Settings: React.FC<ApiKeyInputProps> = ({
+  onSubmit,
+  closeSettings,
+}) => {
+  const { providerConfig } = useProviderConfig();
   const [apiKey, setApiKey] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [selectedAI, setSelectedAI] = useState<AIOptions>(AIOptions.Gemini);
+
+  useEffect(() => {
+    if (providerConfig.ai === selectedAI) {
+      setApiKey(providerConfig.apiKey);
+    }
+  }, [providerConfig, apiKey, selectedAI]);
 
   // const verifyApiKey = async (key: string): Promise<boolean> => {
   //   setIsVerifying(true);
@@ -41,6 +52,7 @@ export const Settings: React.FC<ApiKeyInputProps> = ({ onSubmit }) => {
       ai: selectedAI,
       apiKey: apiKey.trim(),
     });
+    closeSettings();
   };
 
   return (
@@ -50,7 +62,10 @@ export const Settings: React.FC<ApiKeyInputProps> = ({ onSubmit }) => {
       <select
         id="ai-select"
         name="ai-select"
-        onChange={(e) => setSelectedAI(e.target.value as AIOptions)}
+        onChange={(e) => {
+          setSelectedAI(e.target.value as AIOptions);
+          setApiKey("");
+        }}
         className="w-full text-gray-800 border border-r-2 p-2 mb-2"
         value={selectedAI}
       >
@@ -60,14 +75,14 @@ export const Settings: React.FC<ApiKeyInputProps> = ({ onSubmit }) => {
       <label htmlFor="api-key-input">Enter your API Key</label>
       <input
         id="api-key-input"
-        type="text"
+        type="password"
         value={apiKey}
         onChange={(e) => setApiKey(e.target.value)}
         placeholder="Enter API Key"
         className="border border-r-2 mb-2"
       />
       <button
-        className="bg-red-400 disabled:bg-gray-300"
+        className="bg-red-400 disabled:bg-gray-300 hover:bg-red-500"
         onClick={handleSubmit}
         disabled={!selectedAI || !apiKey}
       >

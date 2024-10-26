@@ -182,7 +182,10 @@ const SidePanelContent = () => {
           showSettings={showSettings}
           toggleSettings={() => setShowSettings(!showSettings)}
         />
-        <Settings onSubmit={saveApiKey} />
+        <Settings
+          onSubmit={saveApiKey}
+          closeSettings={() => setShowSettings(false)}
+        />
       </>
     );
   }

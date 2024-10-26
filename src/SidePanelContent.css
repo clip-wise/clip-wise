@@ -126,10 +126,10 @@
 }
 
 .action-button {
+  @apply bg-red-400;
   display: block;
   width: 100%;
   padding: 0.75rem;
-  background-color: #ffa9a9;
   color: white;
   border: none;
   border-radius: 0.25rem;
@@ -147,7 +147,7 @@
 }
 
 .action-button:hover:not([disabled]) {
-  background-color: #ffa9a9cc;
+  @apply bg-red-500;
   transform: translateY(-3px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

@@ -10,7 +10,7 @@ export const summarizeWithGroq = async (apiKey, captions) => {
     body: JSON.stringify({
       model: "llama3-8b-8192",
       temperature: 1,
-      max_tokens: 1024,
+      max_tokens: 2048,
       top_p: 1,
       stream: false,
       stop: null,
