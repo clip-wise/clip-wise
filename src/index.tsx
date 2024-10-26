@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import YoutubeVideoId from "./utils/getYoutubeVideoId";
-import { useApiKey } from "./hooks/useApiKey";
+import { useProviderConfig } from "./hooks/useApiKey";
 import ApiKeyInput from "./components/ApiKeyInput/index";
 import "./SidePanelContent.css";
 import NavigationBar from "./components/NavigationBar/index";
@@ -10,6 +10,7 @@ import { Captions, SkipTime } from "./types";
 import ProcessingIcon from "./components/ProcessIcon";
 import { Actions, ChromeMessageTypes } from "../constants";
 import TakeNotes from "./components/TakeNotes";
+import ReactMarkdown from "react-markdown";
 
 const fn = (skipTimes: SkipTime[]) => {
   if (!(window as any).skipTimesTimer) {
@@ -38,12 +39,14 @@ const fn = (skipTimes: SkipTime[]) => {
 const SidePanelContent = () => {
   const [activeTab, setActiveTab] = useState<chrome.tabs.Tab | null>(null);
   const [captions, setCaptions] = useState<Captions>({
-    loading: false,
     data: [],
     error: "",
   });
   const [error, setError] = useState<string | null>(null);
-  const { apiKey, hasApiKey, saveApiKey, clearApiKey } = useApiKey();
+  const { providerConfig, hasApiKey, saveApiKey, clearApiKey } =
+    useProviderConfig();
+  const [summary, setSummary] = useState("");
+  const [loading, setLoading] = useState<string | undefined>();
 
   const [ui, setUi] = useState<"take-notes" | "default">("default");
 
@@ -64,31 +67,41 @@ const SidePanelContent = () => {
     });
   }, []);
 
+  const handleClipResponse = (message: any) => {
+    if (message?.data?.length !== 0) {
+      const responseData = (message.data?.response || message.data).map(
+        (v: any) => ({
+          start: parseFloat(v.start),
+          end: parseFloat(v.end),
+        })
+      );
+      setCaptions({
+        data: responseData,
+      });
+
+      console.log("Active tab", activeTab?.id);
+      if (activeTab?.id) {
+        setSkipTimes(activeTab?.id, responseData);
+      }
+    } else {
+      setCaptions({
+        data: [],
+        error: "Something went wrong",
+      });
+    }
+    setLoading(undefined);
+  };
+
+  const handleSummaryResponse = (message: any) => {
+    setSummary(message.data);
+    setLoading(undefined);
+  };
+
   const handleCallback = async (message: any, sender: any, reply: any) => {
     if (message.type === ChromeMessageTypes.ClipResponse) {
-      console.log("message-data", message.data);
-      if (message?.data?.length !== 0) {
-        const responseData = (message.data?.response || message.data).map(
-          (v: any) => ({
-            start: parseFloat(v.start),
-            end: parseFloat(v.end),
-          })
-        );
-        setCaptions({
-          data: responseData,
-          loading: false,
-        });
-        console.log("Active tab", activeTab?.id);
-        if (activeTab?.id) {
-          setSkipTimes(activeTab?.id, responseData);
-        }
-      } else {
-        setCaptions({
-          data: [],
-          loading: false,
-          error: "Something went wrong",
-        });
-      }
+      handleClipResponse(message);
+    } else if (message.type === ChromeMessageTypes.SummaryResponse) {
+      handleSummaryResponse(message);
     }
   };
 
@@ -106,9 +119,10 @@ const SidePanelContent = () => {
       chrome.runtime.sendMessage({
         type: ChromeMessageTypes.Clip,
         videoId,
-        apiKey,
+        providerConfig,
       });
-      setCaptions({ loading: true, data: [] });
+      setCaptions({ data: [] });
+      setLoading(Actions.Clip);
     }
 
     if (activeTab?.id) {
@@ -134,22 +148,21 @@ const SidePanelContent = () => {
     const videoId = YoutubeVideoId(activeTab?.url || "");
 
     chrome.runtime.sendMessage({
-      type: ChromeMessageTypes.Summarize,
+      type: ChromeMessageTypes.Summary,
       videoId,
-      apiKey,
+      providerConfig,
     });
+    setLoading(Actions.Summary);
   };
 
   const handleActionClick = (action: string) => {
+    setSummary("");
+    setCaptions({ data: [] });
     if (action === Actions.Clip) {
       handleActionClip();
-      return;
-    }
-    if (action === Actions.Summary) {
+    } else if (action === Actions.Summary) {
       handleActionSummary();
-      return;
-    }
-    if (action === "take-notes") {
+    } else if (action === "take-notes") {
       setUi("take-notes");
       return;
     }
@@ -171,10 +184,10 @@ const SidePanelContent = () => {
           {error && <ErrorMessage message={error} />}
           <MainContent
             onActionClick={handleActionClick}
-            disableOptions={captions.loading}
+            disableOptions={!!loading}
           />
           <div className="captions-section">
-            {captions.loading ? (
+            {loading ? (
               <div className="processing">
                 <p>Processing...</p>
                 <ProcessingIcon />
@@ -188,6 +201,12 @@ const SidePanelContent = () => {
               <p className="italic text-red-600">{captions.error}</p>
             )}
           </div>
+          {summary && (
+            <div className="mt-1">
+              <h2 className="text-bold text-lg">Summary of the Video</h2>
+              <ReactMarkdown>{summary}</ReactMarkdown>
+            </div>
+          )}
         </div>
       )}
       {ui === "take-notes" && (

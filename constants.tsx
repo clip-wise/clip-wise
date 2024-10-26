@@ -1,7 +1,8 @@
 export const ChromeMessageTypes = {
   Clip: "clip",
   ClipResponse: "clip-response",
-  Summarize: "summarize",
+  Summary: "summarize",
+  SummaryResponse: "summarize-response",
 };
 
 export const Actions = {
@@ -10,3 +11,8 @@ export const Actions = {
   FlashCards: "flashcards",
   Summary: "summary",
 };
+
+export enum AIOptions {
+  Gemini = "gemini",
+  Groq = "groq",
+}

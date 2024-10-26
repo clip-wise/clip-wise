@@ -53,26 +53,6 @@ Please proceed with your analysis and summary of the YouTube video transcript.`,
         topK: 64,
         topP: 0.95,
         maxOutputTokens: 8192,
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: "object",
-          properties: {
-            response: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  start: {
-                    type: "number",
-                  },
-                  end: {
-                    type: "number",
-                  },
-                },
-              },
-            },
-          },
-        },
       },
       contents: [
         {
@@ -89,5 +69,16 @@ Please proceed with your analysis and summary of the YouTube video transcript.`,
     }),
   });
 
-  return response.json();
+  const json = await response.json();
+  const string = json.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+
+  const regex = /<transcript_breakdown>([\s\S]*?)<\/transcript_breakdown>/;
+
+  const match = string.match(regex);
+  if (match) {
+    const transcript_breakdown = match[1];
+    return transcript_breakdown;
+  } else {
+    return string;
+  }
 };
