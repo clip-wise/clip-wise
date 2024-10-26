@@ -1,3 +1,5 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
 import { getSubtitles } from "youtube-captions-scraper";
 
 const isFirefoxLike =
@@ -23,7 +25,55 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
 
     // TODO: find captions to skip
 
-    chrome.runtime.sendMessage({ type: "captions-to-skip", data: captions });
+    const GOOGLE_API_KEY = "";
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`,
+      {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({
+          systemInstruction: {
+            role: "user",
+            parts: [
+              {
+                text: "Read the given transcript and generate an array of start time and end time to skip the promotional content in the video. Respond with valid JSON.",
+              },
+            ],
+          },
+          generationConfig: {
+            temperature: 1,
+            topK: 64,
+            topP: 0.95,
+            maxOutputTokens: 8192,
+            responseMimeType: "application/json",
+          },
+          contents: [
+            {
+              role: "user",
+              parts: [
+                {
+                  text: JSON.stringify(captions),
+                },
+              ],
+            },
+          ],
+        }),
+      }
+    );
+    let data;
+    let error;
+    if (response.ok) {
+      data = await response.json();
+      console.log("data", data);
+    } else {
+      error = response.status;
+      console.log("error", error);
+    }
+
+    console.log("captions", captions);
+
+    chrome.runtime.sendMessage({ type: "captions-to-skip", data, error });
   }
 });
 

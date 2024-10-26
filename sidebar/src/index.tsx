@@ -18,7 +18,8 @@ const SidePanelContent = () => {
     });
 
     chrome.runtime.onMessage.addListener((message, sender, reply) => {
-      if (message.type === 'captions-to-skip' && message.data) {
+      if (message.type === "captions-to-skip") {
+        console.log("message", message);
         setCaptions(message.data);
       }
     });
@@ -79,9 +80,7 @@ const SidePanelContent = () => {
       <hr className='divider' />
       <div className='captions-section'>
         {captions.map((caption, index) => (
-          <p key={index} className='caption-preview'>
-            {caption.text.slice(0, 50)}...
-          </p>
+          <p key={index}>{JSON.stringify(caption)}...</p>
         ))}
       </div>
     </div>
