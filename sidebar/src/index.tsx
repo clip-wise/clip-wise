@@ -7,28 +7,28 @@ import "./SidePanelContent.css";
 type SkipTime = { start: number; end: number };
 
 const fn = (skipTimes: SkipTime[]) => {
-  debugger
-  if (!window.skipTimesTimer) {
-    window.skipTimes = skipTimes;
-    window.skipTimesTimer = setInterval(() => {
-      const skipTimes = window.skipTimes as SkipTime[];
+  debugger;
+  if (!(window as any).skipTimesTimer) {
+    (window as any).skipTimes = skipTimes;
+    (window as any).skipTimesTimer = setInterval(() => {
+      const skipTimes = (window as any).skipTimes as SkipTime[];
       const video = document.querySelector(
         ".html5-video-player"
       ) as HTMLVideoElement;
 
-      const currentTime = video.getCurrentTime();
+      const currentTime = (video as any).getCurrentTime();
       if (skipTimes) {
         const skipTime = skipTimes.find(
           (skipTime) =>
             skipTime.start <= currentTime && skipTime.end >= currentTime
         );
         if (skipTime) {
-          video?.seekTo(skipTime.end);
+          (video as any)?.seekTo(skipTime.end);
         }
       }
     }, 1000);
   }
-  window.skipTimes = skipTimes;
+  (window as any).skipTimes = skipTimes;
 };
 
 const SidePanelContent = () => {
