@@ -14,6 +14,7 @@ import ReactMarkdown from "react-markdown";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import { useCopyToClipboard } from "./hooks/useCopyToClipboard";
 import FlashCard from "./components/FlashCard";
+import { de } from "@blocknote/core/types/src/i18n/locales";
 
 const fn = (skipTimes: SkipTime[]) => {
   if (!(window as any).skipTimesTimer) {
@@ -181,9 +182,9 @@ const SidePanelContent = () => {
   };
 
   const handleActionClick = (action: string) => {
+    debugger;
     setSummary("");
     setCaptions({ data: [] });
-    debugger;
     if (action === Actions.Clip) {
       handleActionClip();
     } else if (action === Actions.Summary) {
@@ -193,11 +194,11 @@ const SidePanelContent = () => {
       return;
     } else if (action === Actions.FlashCards) {
       handleActionFlashCards();
-      return;
     } else {
       // Implement the logic for each action
       console.log(`Missing Handler for the Action: <bold>${action}</bold>`);
     }
+    console.log("sending action message", action);
 
     chrome.runtime.sendMessage({ type: action });
   };

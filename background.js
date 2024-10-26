@@ -23,6 +23,7 @@ if (isFirefoxLike) {
 }
 
 chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
+  console.log("received message", message);
   const { type, providerConfig, videoId } = message;
   const { ai, apiKey } = providerConfig || {};
 
@@ -55,7 +56,6 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
     const transcript = await getSubtitles({
       videoID: videoId,
     });
-    debugger;
     const response =
       ai === AIOptions.Gemini
         ? await summarizeWithGemini(apiKey, transcript)
@@ -64,16 +64,17 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
       type: ChromeMessageTypes.SummaryResponse,
       data: response,
     });
-  } else if (message.type == ChromeMessageTypes.FlashCards) {
+  } else if (type == ChromeMessageTypes.FlashCards) {
+    debugger;
     console.log("Flash cards", message);
-    if (!message.videoId) return;
+    if (!videoId) return;
     const transcript = await getSubtitles({
-      videoID: message.videoId,
+      videoID: videoId,
     });
     const response =
       ai === AIOptions.Gemini
-        ? await flashcardsWithGemini(message.apiKey, transcript)
-        : await flashcardsWithGroq(message.apiKey, transcript);
+        ? await flashcardsWithGemini(apiKey, transcript)
+        : await flashcardsWithGroq(apiKey, transcript);
     chrome.runtime.sendMessage({
       type: ChromeMessageTypes.FlashCardsResponse,
       data: response,
