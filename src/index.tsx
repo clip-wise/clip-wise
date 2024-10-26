@@ -6,8 +6,8 @@ import "./SidePanelContent.css";
 import NavigationBar from "./components/NavigationBar/index";
 import ErrorMessage from "./components/ErrorMessage";
 import MainContent from "./components/MainContent";
-import CaptionSection from "./components/CaptionSection";
 import { Captions, SkipTime } from "./types";
+import ProcessingIcon from "./components/processingIcon";
 
 const fn = (skipTimes: SkipTime[]) => {
   if (!(window as any).skipTimesTimer) {
@@ -142,10 +142,13 @@ const SidePanelContent = () => {
       <NavigationBar title="ClipWise" onClearApiKey={clearApiKey} />
       <div className="side-panel-content">
         {error && <ErrorMessage message={error} />}
-        <MainContent onActionClick={handleActionClick} />
+        <MainContent onActionClick={handleActionClick} disableOptions={captions.loading} />
         <div className="captions-section">
           {captions.loading ? (
-            <p>Processing...</p>
+            <div className="processing">
+              <p>Processing...</p>
+              <ProcessingIcon />
+            </div>
           ) : (
             captions.data.map((caption, index) => (
               <p key={index}>{JSON.stringify(caption)}...</p>

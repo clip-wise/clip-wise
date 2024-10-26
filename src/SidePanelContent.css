@@ -150,6 +150,13 @@
   font-size: 1rem;
 }
 
+.action-button[disabled] {
+  background-color: #d1d5db;
+  color: #374151;
+  cursor: not-allowed;
+  user-select: none;
+}
+
 .action-button:hover {
   background-color: #ffa9a9cc;
   transform: translateY(-3px);
@@ -157,9 +164,13 @@
 }
 
 .processing {
-  animation: pulse 1.5s infinite;
   text-align: center;
   margin-top: 1rem;
+}
+
+.processing p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
 }
 
 @keyframes fadeIn {
