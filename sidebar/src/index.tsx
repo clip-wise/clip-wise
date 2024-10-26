@@ -4,11 +4,38 @@ import { useApiKey } from "./hooks/useApiKey";
 import { ApiKeyInput } from "./components/ApiKeyInput";
 import "./SidePanelContent.css";
 
+type SkipTime = { start: number; end: number };
+
+const fn = (skipTimes: SkipTime[]) => {
+  debugger
+  if (!window.skipTimesTimer) {
+    window.skipTimes = skipTimes;
+    window.skipTimesTimer = setInterval(() => {
+      const skipTimes = window.skipTimes as SkipTime[];
+      const video = document.querySelector(
+        ".html5-video-player"
+      ) as HTMLVideoElement;
+
+      const currentTime = video.getCurrentTime();
+      if (skipTimes) {
+        const skipTime = skipTimes.find(
+          (skipTime) =>
+            skipTime.start <= currentTime && skipTime.end >= currentTime
+        );
+        if (skipTime) {
+          video?.seekTo(skipTime.end);
+        }
+      }
+    }, 1000);
+  }
+  window.skipTimes = skipTimes;
+};
+
 const SidePanelContent = () => {
   const [activeTab, setActiveTab] = useState<chrome.tabs.Tab | null>(null);
   const [captions, setCaptions] = useState<{
     loading: boolean;
-    data: Array<{ start: number; end: number }>;
+    data: SkipTime[];
   }>({
     loading: false,
     data: [],
@@ -16,30 +43,52 @@ const SidePanelContent = () => {
   const [error, setError] = useState<string | null>(null);
   const { apiKey, hasApiKey, saveApiKey, clearApiKey } = useApiKey();
 
+  const setSkipTimes = async (activeTabId: number, skipTimes: SkipTime[]) => {
+    await chrome.scripting.executeScript({
+      target: { tabId: activeTabId },
+      func: fn,
+      args: [skipTimes],
+      world: "MAIN",
+    });
+  };
+
   useEffect(() => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       if (tabs[0]) {
         setActiveTab(tabs[0]);
       }
     });
-
-    chrome.runtime.onMessage.addListener((message, sender, reply) => {
-      if (message.type === "captions-to-skip") {
-        console.log("message-data", message.data);
-        if (message.data?.length !== 0) {
-          setCaptions({
-            data: message.data.map((v: any) => ({
-              start: parseFloat(v.start),
-              end: parseFloat(v.end),
-            })),
-            loading: false,
-          });
-        } else {
-          setCaptions({ data: [], loading: false });
-        }
-      }
-    });
   }, []);
+
+  const handleCallback = async (message: any, sender: any, reply: any) => {
+    if (message.type === "captions-to-skip") {
+      console.log("message-data", message.data);
+      if (message.data?.length !== 0) {
+        const responseData = message.data.map((v: any) => ({
+          start: parseFloat(v.start),
+          end: parseFloat(v.end),
+        }));
+        setCaptions({
+          data: responseData,
+          loading: false,
+        });
+        console.log("Active tab", activeTab?.id);
+        if (activeTab?.id) {
+          setSkipTimes(activeTab?.id, responseData);
+        }
+      } else {
+        setCaptions({ data: [], loading: false });
+      }
+    }
+  };
+
+  useEffect(() => {
+    chrome.runtime.onMessage.addListener(handleCallback);
+
+    return () => {
+      chrome.runtime.onMessage.removeListener(handleCallback);
+    };
+  }, [activeTab?.id]);
 
   const handleStart = async () => {
     const videoId = YoutubeVideoId(activeTab?.url || "");
