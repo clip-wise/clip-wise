@@ -8,7 +8,7 @@
   align-items: center;
   margin-bottom: 1rem;
   padding: 0.5rem 1rem;
-  background-color: #6a425c;
+  background-color: #6e79ff;
   transition: all 0.3s ease;
   color: white;
 }
@@ -126,7 +126,7 @@
 }
 
 .action-button {
-  @apply bg-red-400;
+  background-color: #f8a130;
   display: block;
   width: 100%;
   padding: 0.75rem;
@@ -147,7 +147,8 @@
 }
 
 .action-button:hover:not([disabled]) {
-  @apply bg-red-500;
+  /* @apply bg-red-500; */
+  background-color: #ffbb56;
   transform: translateY(-3px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

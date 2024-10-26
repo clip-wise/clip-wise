@@ -82,7 +82,7 @@ export const Settings: React.FC<ApiKeyInputProps> = ({
         className="border border-r-2 mb-2"
       />
       <button
-        className="bg-red-400 disabled:bg-gray-300 hover:bg-red-500"
+        className="bg-[#f8a130] disabled:bg-gray-300 hover:bg-[#ffbb56]"
         onClick={handleSubmit}
         disabled={!selectedAI || !apiKey}
       >
