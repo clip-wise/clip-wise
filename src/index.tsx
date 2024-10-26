@@ -191,7 +191,6 @@ const SidePanelContent = () => {
   };
 
   const handleActionClick = (action: string) => {
-    debugger;
     setSummary("");
     setCaptions({ data: [] });
     setError(null);
