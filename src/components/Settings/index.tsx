@@ -42,7 +42,7 @@ export const Settings: React.FC<ApiKeyInputProps> = ({
     if (!selectedAI || !apiKey) return;
     onSubmit({
       ai: selectedAI,
-      apiKey,
+      apiKey: apiKey.trim(),
     });
     closeSettings();
   };
