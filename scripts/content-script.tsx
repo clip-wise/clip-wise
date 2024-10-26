@@ -9,3 +9,6 @@ style.textContent = `
   }
 `;
 document.head.appendChild(style);
+
+// So video resizes after hiding the unnecessary elements
+window.dispatchEvent(new Event("resize"));
