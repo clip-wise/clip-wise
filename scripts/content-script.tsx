@@ -4,7 +4,7 @@ style.textContent = `
     transition: width 0.3s ease !important;
   }
   
-  #secondary, #related, #comments {
+  #secondary, #related, #comments, ytd-merch-shelf-renderer {
     display: none !important;
   }
 `;
