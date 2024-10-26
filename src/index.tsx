@@ -39,6 +39,7 @@ const SidePanelContent = () => {
   const [captions, setCaptions] = useState<Captions>({
     loading: false,
     data: [],
+    error: "",
   });
   const [error, setError] = useState<string | null>(null);
   const { apiKey, hasApiKey, saveApiKey, clearApiKey } = useApiKey();
@@ -63,7 +64,7 @@ const SidePanelContent = () => {
   const handleCallback = async (message: any, sender: any, reply: any) => {
     if (message.type === ChromeMessageTypes.ClipResponse) {
       console.log("message-data", message.data);
-      if (message.data?.length !== 0) {
+      if (message?.data?.length !== 0) {
         const responseData = (message.data?.response || message.data).map(
           (v: any) => ({
             start: parseFloat(v.start),
@@ -79,7 +80,11 @@ const SidePanelContent = () => {
           setSkipTimes(activeTab?.id, responseData);
         }
       } else {
-        setCaptions({ data: [], loading: false });
+        setCaptions({
+          data: [],
+          loading: false,
+          error: "Something went wrong",
+        });
       }
     }
   };
@@ -95,12 +100,11 @@ const SidePanelContent = () => {
   const handleStart = async () => {
     const videoId = YoutubeVideoId(activeTab?.url || "");
     if (videoId) {
-      chrome.runtime.sendMessage(
-        { type: ChromeMessageTypes.Clip, videoId, apiKey },
-        (response) => {
-          console.log("received user data", response);
-        }
-      );
+      chrome.runtime.sendMessage({
+        type: ChromeMessageTypes.Clip,
+        videoId,
+        apiKey,
+      });
       setCaptions({ loading: true, data: [] });
     }
 
@@ -161,6 +165,9 @@ const SidePanelContent = () => {
             captions.data.map((caption, index) => (
               <p key={index}>{JSON.stringify(caption)}...</p>
             ))
+          )}
+          {captions.error && (
+            <p className="italic text-red-600">{captions.error}</p>
           )}
         </div>
       </div>
