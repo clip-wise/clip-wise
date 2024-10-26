@@ -3,12 +3,13 @@ import { Settings } from "lucide-react";
 
 interface NavigationBarProps {
   title: string;
-  onClearApiKey: () => void;
+  showSettings: () => void;
 }
 
 const NavigationBar: React.FC<NavigationBarProps> = ({
   title,
-  onClearApiKey,
+  showSettings,
+  // closeSettings,
 }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -54,10 +55,10 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
         <span>{title}</span>
       </h1>
       <div className="settings-dropdown">
-        <button onClick={() => setIsSettingsOpen(!isSettingsOpen)}>
+        <button onClick={showSettings}>
           <Settings />
         </button>
-        {isSettingsOpen && (
+        {/* {isSettingsOpen && (
           <div
             className={`dropdown-content ${
               isSettingsOpen ? "open" : ""
@@ -65,7 +66,7 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
           >
             <button onClick={onClearApiKey}>Change API Key</button>
           </div>
-        )}
+        )} */}
       </div>
     </nav>
   );

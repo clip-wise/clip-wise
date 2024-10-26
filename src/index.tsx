@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import YoutubeVideoId from "./utils/getYoutubeVideoId";
-import { useProviderConfig } from "./hooks/useApiKey";
-import ApiKeyInput from "./components/ApiKeyInput/index";
+import { useProviderConfig } from "./hooks/useProviderConfig";
+import { Settings } from "./components/Settings/index";
 import "./SidePanelContent.css";
 import NavigationBar from "./components/NavigationBar/index";
 import ErrorMessage from "./components/ErrorMessage";
@@ -43,8 +43,8 @@ const SidePanelContent = () => {
     error: "",
   });
   const [error, setError] = useState<string | null>(null);
-  const { providerConfig, hasApiKey, saveApiKey, clearApiKey } =
-    useProviderConfig();
+  const { providerConfig, hasApiKey, saveApiKey } = useProviderConfig();
+  const [showSettings, setShowSettings] = useState(false);
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState<string | undefined>();
 
@@ -172,13 +172,21 @@ const SidePanelContent = () => {
     chrome.runtime.sendMessage({ type: action });
   };
 
-  if (!hasApiKey) {
-    return <ApiKeyInput onSubmit={saveApiKey} />;
+  if (showSettings) {
+    return (
+      <Settings
+        onSubmit={saveApiKey}
+        closeSettings={() => setShowSettings(false)}
+      />
+    );
   }
 
   return (
     <>
-      <NavigationBar title="ClipWise" onClearApiKey={clearApiKey} />
+      <NavigationBar
+        title="ClipWise"
+        showSettings={() => setShowSettings(true)}
+      />
       {ui === "default" && (
         <div className="side-panel-content">
           {error && <ErrorMessage message={error} />}
