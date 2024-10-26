@@ -1,5 +1,5 @@
 export const summarizeWithGemini = async (apiKey, captions) => {
-  const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:summarize?key=${apiKey}`;
+  const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
   const response = await fetch(URL, {
     headers: { "Content-Type": "application/json" },
@@ -88,4 +88,6 @@ Please proceed with your analysis and summary of the YouTube video transcript.`,
       ],
     }),
   });
+
+  return response.json();
 };

@@ -130,7 +130,11 @@ const SidePanelContent = () => {
   const handleActionSummary = () => {
     const videoId = YoutubeVideoId(activeTab?.url || "");
 
-    chrome.runtime.sendMessage({ type: ChromeMessageTypes.Summarize, videoId });
+    chrome.runtime.sendMessage({
+      type: ChromeMessageTypes.Summarize,
+      videoId,
+      apiKey,
+    });
   };
 
   const handleActionClick = (action: string) => {
