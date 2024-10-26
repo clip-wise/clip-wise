@@ -171,6 +171,11 @@ const SidePanelContent = () => {
   };
 
   const handleActionFlashCards = () => {
+    if (providerConfig.ai === "groq") {
+      // Flash cards are not available for Groq provider
+      setError("Flash cards are not available for the Groq provider.");
+      return;
+    }
     const videoId = YoutubeVideoId(activeTab?.url || "");
     chrome.runtime.sendMessage({
       type: ChromeMessageTypes.FlashCards,
@@ -185,6 +190,7 @@ const SidePanelContent = () => {
     debugger;
     setSummary("");
     setCaptions({ data: [] });
+    setError(null);
     if (action === Actions.Clip) {
       handleActionClip();
     } else if (action === Actions.Summary) {
@@ -258,8 +264,8 @@ const SidePanelContent = () => {
           </div>
           {summary && (
             <div className="mt-1">
-              <div className="flex justify-start gap-x-2">
-                <h2 className="text-bold text-lg">Summary of the Video</h2>
+              <div className="flex gap-x-2 justify-start">
+                <h2 className="text-lg text-bold">Summary of the Video</h2>
                 <span>
                   {!showCopied ? (
                     <Clipboard
@@ -280,8 +286,7 @@ const SidePanelContent = () => {
         <div className="flex-1 p-4">
           <button
             onClick={() => setUi("default")}
-            className="px-4 py-2 mb-4 bg-gray-200 rounded"
-          >
+            className="px-4 py-2 mb-4 bg-gray-200 rounded">
             ← Back
           </button>
           <p className="mb-4">Take notes in this rich text experience.</p>
@@ -295,8 +300,7 @@ const SidePanelContent = () => {
           <button
             onClick={() => setUi("default")}
             className="px-4 py-2 mb-4 bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={loading === Actions.FlashCards}
-          >
+            disabled={loading === Actions.FlashCards}>
             ← Back
           </button>
           <FlashCard
