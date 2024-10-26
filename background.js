@@ -1,5 +1,8 @@
 import { getSubtitles } from "youtube-captions-scraper";
 
+import { generateWithGemini } from "./helpers/generateWithGemini";
+import { generateWithGroq } from "./helpers/generateWithGroq";
+
 const isFirefoxLike =
   process.env.EXTENSION_PUBLIC_BROWSER === "firefox" ||
   process.env.EXTENSION_PUBLIC_BROWSER === "gecko-based";
@@ -23,81 +26,11 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
 
     console.log("captions", captions);
 
-    console.log("Filtering captions");
-
-    const GOOGLE_API_KEY = message.apiKey;
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GOOGLE_API_KEY}`,
-      {
-        headers: { "Content-Type": "application/json" },
-        method: "POST",
-        body: JSON.stringify({
-          systemInstruction: {
-            role: "user",
-            parts: [
-              {
-                text: `
-You are a helpful learning assistant. You are provided with the transcript of a youtube video including the timestamps. Go over the transcript and identify the part of the script that is not educational. It may be promotions, unuseful talks or random unrelated information.
-With that in mind, I need to know the parts of the video that can be skipped while learning.
-Return only an array of start and end times that can be skipped without affecting the overall watch quality. Respond with valid JSON.`,
-              },
-            ],
-          },
-          generationConfig: {
-            temperature: 1,
-            topK: 64,
-            topP: 0.95,
-            maxOutputTokens: 8192,
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: "object",
-              properties: {
-                response: {
-                  type: "array",
-                  items: {
-                    type: "object",
-                    properties: {
-                      start: {
-                        type: "number",
-                      },
-                      end: {
-                        type: "number",
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: JSON.stringify(captions),
-                },
-              ],
-            },
-          ],
-        }),
-      }
-    );
-
-    let data;
-    let error;
-    if (response.ok) {
-      data = await response.json();
-      console.log("data", data);
-    } else {
-      error = response.status;
-      console.log("error", error);
-    }
-
     try {
-      const responseData = JSON.parse(
-        (data?.candidates?.[0]?.content?.parts?.[0]?.text || "[]").trim()
-      );
+      const { responseData, error } =
+        message.AI === "gemini"
+          ? generateWithGemini(message.apiKey, captions)
+          : generateWithGroq(message.apiKey, captions);
       chrome.runtime.sendMessage({
         type: "captions-to-skip",
         data: responseData,
