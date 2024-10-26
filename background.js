@@ -1,5 +1,3 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
 import { getSubtitles } from "youtube-captions-scraper";
 
 const isFirefoxLike =
@@ -23,7 +21,9 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
       videoID,
     });
 
-    // TODO: find captions to skip
+    console.log("captions", captions);
+
+    console.log("Filtering captions");
 
     const GOOGLE_API_KEY = message.apiKey;
 
@@ -61,6 +61,7 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
         }),
       }
     );
+
     let data;
     let error;
     if (response.ok) {
@@ -71,9 +72,22 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
       console.log("error", error);
     }
 
-    console.log("captions", captions);
-
-    chrome.runtime.sendMessage({ type: "captions-to-skip", data, error });
+    try {
+      const responseData = JSON.parse(
+        (data?.candidates?.[0]?.content?.parts?.[0]?.text || "[]").trim()
+      );
+      chrome.runtime.sendMessage({
+        type: "captions-to-skip",
+        data: responseData,
+        error,
+      });
+    } catch (error) {
+      chrome.runtime.sendMessage({
+        type: "captions-to-skip",
+        data: [],
+        error: error.message,
+      });
+    }
   }
 });
 

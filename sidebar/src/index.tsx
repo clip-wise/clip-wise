@@ -6,7 +6,13 @@ import "./SidePanelContent.css";
 
 const SidePanelContent = () => {
   const [activeTab, setActiveTab] = useState<chrome.tabs.Tab | null>(null);
-  const [captions, setCaptions] = useState<any[]>([]);
+  const [captions, setCaptions] = useState<{
+    loading: boolean;
+    data: Array<{ start: number; end: number }>;
+  }>({
+    loading: false,
+    data: [],
+  });
   const [error, setError] = useState<string | null>(null);
   const { apiKey, hasApiKey, saveApiKey, clearApiKey } = useApiKey();
 
@@ -19,8 +25,18 @@ const SidePanelContent = () => {
 
     chrome.runtime.onMessage.addListener((message, sender, reply) => {
       if (message.type === "captions-to-skip") {
-        console.log("message", message);
-        setCaptions(message.data);
+        console.log("message-data", message.data);
+        if (message.data?.length !== 0) {
+          setCaptions({
+            data: message.data.map((v: any) => ({
+              start: parseFloat(v.start),
+              end: parseFloat(v.end),
+            })),
+            loading: false,
+          });
+        } else {
+          setCaptions({ data: [], loading: false });
+        }
       }
     });
   }, []);
@@ -34,6 +50,7 @@ const SidePanelContent = () => {
           console.log("received user data", response);
         }
       );
+      setCaptions({ loading: true, data: [] });
     }
 
     if (activeTab?.id) {
@@ -69,8 +86,12 @@ const SidePanelContent = () => {
         </div>
       )}
       <div className="api-key-section">
-        <p>API Key is set for OpenAI. You're ready to go!</p>
-        <button onClick={handleStart} className="start-button">
+        <p>API Key is set for Google Gemini. You're ready to go!</p>
+        <button
+          onClick={handleStart}
+          className="start-button"
+          disabled={captions.loading}
+        >
           Start
         </button>
         <button onClick={clearApiKey} className="change-key-button">
@@ -79,9 +100,13 @@ const SidePanelContent = () => {
       </div>
       <hr className="divider" />
       <div className="captions-section">
-        {captions.map((caption, index) => (
-          <p key={index}>{JSON.stringify(caption)}...</p>
-        ))}
+        {captions.loading ? (
+          <p>Processing...</p>
+        ) : (
+          captions.data.map((caption, index) => (
+            <p key={index}>{JSON.stringify(caption)}...</p>
+          ))
+        )}
       </div>
     </div>
   );

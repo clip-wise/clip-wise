@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 
 interface ProviderConfig {
   name: string;
@@ -6,16 +6,16 @@ interface ProviderConfig {
 }
 
 const getApiKey = (): string => {
-  const storedConfig = localStorage.getItem('llmConfig');
+  const storedConfig = localStorage.getItem("llmConfig");
   if (storedConfig) {
     const config: ProviderConfig = JSON.parse(storedConfig);
     return config.apiKey;
   }
-  throw new Error('API key not found in local storage');
+  throw new Error("API key not found in local storage");
 };
 
 const apiClient = axios.create({
-  baseURL: 'https://api.openai.com/v1', // Default to OpenAI, can be changed based on provider
+  baseURL: "https://generativelanguage.googleapis.com//v1", // Default to Google Gemini, can be changed based on provider
 });
 
 apiClient.interceptors.request.use((config) => {
