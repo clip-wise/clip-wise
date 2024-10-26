@@ -7,8 +7,9 @@ import NavigationBar from "./components/NavigationBar/index";
 import ErrorMessage from "./components/ErrorMessage";
 import MainContent from "./components/MainContent";
 import { Captions, SkipTime } from "./types";
-import ProcessingIcon from "./components/processingIcon";
+import ProcessingIcon from "./components/ProcessingIcon";
 import { ChromeMessageTypes } from "../constants";
+import TakeNotes from "./components/TakeNotes";
 
 const fn = (skipTimes: SkipTime[]) => {
   if (!(window as any).skipTimesTimer) {
@@ -43,6 +44,8 @@ const SidePanelContent = () => {
   });
   const [error, setError] = useState<string | null>(null);
   const { apiKey, hasApiKey, saveApiKey, clearApiKey } = useApiKey();
+
+  const [ui, setUi] = useState<"take-notes" | "default">("default");
 
   const setSkipTimes = async (activeTabId: number, skipTimes: SkipTime[]) => {
     await chrome.scripting.executeScript({
@@ -136,6 +139,10 @@ const SidePanelContent = () => {
       chrome.runtime.sendMessage({ type: ChromeMessageTypes.Summarize });
       return;
     }
+    if (action === "take-notes") {
+      setUi("take-notes");
+      return;
+    }
 
     // Implement the logic for each action
     console.log(`Action clicked: ${action}`);
@@ -149,28 +156,41 @@ const SidePanelContent = () => {
   return (
     <>
       <NavigationBar title="ClipWise" onClearApiKey={clearApiKey} />
-      <div className="side-panel-content">
-        {error && <ErrorMessage message={error} />}
-        <MainContent
-          onActionClick={handleActionClick}
-          disableOptions={captions.loading}
-        />
-        <div className="captions-section">
-          {captions.loading ? (
-            <div className="processing">
-              <p>Processing...</p>
-              <ProcessingIcon />
-            </div>
-          ) : (
-            captions.data.map((caption, index) => (
-              <p key={index}>{JSON.stringify(caption)}...</p>
-            ))
-          )}
-          {captions.error && (
-            <p className="italic text-red-600">{captions.error}</p>
-          )}
+      {ui === "default" && (
+        <div className="side-panel-content">
+          {error && <ErrorMessage message={error} />}
+          <MainContent
+            onActionClick={handleActionClick}
+            disableOptions={captions.loading}
+          />
+          <div className="captions-section">
+            {captions.loading ? (
+              <div className="processing">
+                <p>Processing...</p>
+                <ProcessingIcon />
+              </div>
+            ) : (
+              captions.data.map((caption, index) => (
+                <p key={index}>{JSON.stringify(caption)}...</p>
+              ))
+            )}
+            {captions.error && (
+              <p className="italic text-red-600">{captions.error}</p>
+            )}
+          </div>
         </div>
-      </div>
+      )}
+      {ui === "take-notes" && (
+        <div className="side-panel-content pl-0">
+          <button onClick={() => setUi("default")} className="px-4">
+            ← Back
+          </button>
+          <p className="px-4 mb-2">Take notes in this rich text experience.</p>
+          <div className="border">
+            <TakeNotes url={activeTab?.url || ""} />
+          </div>
+        </div>
+      )}
     </>
   );
 };
