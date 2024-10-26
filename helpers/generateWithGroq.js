@@ -22,7 +22,7 @@ export const generateWithGroq = async (apiKey, captions) => {
           role: "system",
           content: `
           You are tasked with analyzing a YouTube video transcript to identify potential promotional content. The transcript will be provided in a structured format, and your goal is to find any parts that might contain promotional material.
-Here is the transcript you need to analyze:
+The user will provide the transcript in the following format:
 <transcript>
 {{TRANSCRIPT}}
 </transcript>
@@ -45,7 +45,9 @@ Write your answer inside <answer> tags, ensuring the content is valid JSON.
         },
         {
           role: "user",
-          content: JSON.stringify(captions),
+          content: `<transcript>${JSON.stringify(
+            captions
+          ).trim()}</transcript>`,
         },
       ],
     }),
@@ -60,6 +62,10 @@ Write your answer inside <answer> tags, ensuring the content is valid JSON.
     error = response.status;
     console.log("error", error);
   }
-  const responseData = JSON.parse(data.choices?.[0]?.message?.content);
+  console.log(
+    "parsed groq response",
+    JSON.parse(data.choices?.[0]?.message?.content)
+  );
+  let responseData = JSON.parse(data.choices?.[0]?.message?.content);
   return { responseData, error };
 };

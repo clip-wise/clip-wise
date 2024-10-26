@@ -8,6 +8,7 @@ import ErrorMessage from "./components/ErrorMessage";
 import MainContent from "./components/MainContent";
 import { Captions, SkipTime } from "./types";
 import ProcessingIcon from "./components/processingIcon";
+import { ChromeMessageTypes } from "../constants";
 
 const fn = (skipTimes: SkipTime[]) => {
   if (!(window as any).skipTimesTimer) {
@@ -60,7 +61,7 @@ const SidePanelContent = () => {
   }, []);
 
   const handleCallback = async (message: any, sender: any, reply: any) => {
-    if (message.type === "captions-to-skip") {
+    if (message.type === ChromeMessageTypes.ClipResponse) {
       console.log("message-data", message.data);
       if (message.data?.length !== 0) {
         const responseData = (message.data?.response || message.data).map(
@@ -95,7 +96,7 @@ const SidePanelContent = () => {
     const videoId = YoutubeVideoId(activeTab?.url || "");
     if (videoId) {
       chrome.runtime.sendMessage(
-        { type: "fetch-data", videoId, apiKey },
+        { type: ChromeMessageTypes.Clip, videoId, apiKey },
         (response) => {
           console.log("received user data", response);
         }
@@ -127,6 +128,10 @@ const SidePanelContent = () => {
       handleStart();
       return;
     }
+    if (action === "summarize") {
+      chrome.runtime.sendMessage({ type: ChromeMessageTypes.Summarize });
+      return;
+    }
 
     // Implement the logic for each action
     console.log(`Action clicked: ${action}`);
@@ -142,7 +147,10 @@ const SidePanelContent = () => {
       <NavigationBar title="ClipWise" onClearApiKey={clearApiKey} />
       <div className="side-panel-content">
         {error && <ErrorMessage message={error} />}
-        <MainContent onActionClick={handleActionClick} disableOptions={captions.loading} />
+        <MainContent
+          onActionClick={handleActionClick}
+          disableOptions={captions.loading}
+        />
         <div className="captions-section">
           {captions.loading ? (
             <div className="processing">

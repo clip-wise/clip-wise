@@ -11,7 +11,7 @@ export const generateWithGemini = async (apiKey, captions) => {
           {
             text: `
   You are tasked with analyzing a YouTube video transcript to identify potential promotional content. The transcript will be provided in a structured format, and your goal is to find any parts that might contain promotional material.
-Here is the transcript you need to analyze:
+The user will provide the transcript in the following format:
 <transcript>
 {{TRANSCRIPT}}
 </transcript>
@@ -64,7 +64,7 @@ Write your answer inside <answer> tags, ensuring the content is valid JSON.`,
           role: "user",
           parts: [
             {
-              text: JSON.stringify(captions),
+              text: `<transcript>${JSON.stringify(captions)}</transcript>`,
             },
           ],
         },
