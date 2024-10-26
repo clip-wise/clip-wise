@@ -41,6 +41,7 @@
     "@blocknote/react": "^0.17.1",
     "axios": "^1.7.7",
     "lucide-react": "^0.453.0",
+    "react-markdown": "^9.0.1",
     "youtube-captions-scraper": "^2.0.3"
   }
 }

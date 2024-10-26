@@ -22,17 +22,17 @@ if (isFirefoxLike) {
 chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
   if (message.type == ChromeMessageTypes.Clip && message.videoId) {
     const videoID = message.videoId;
-    const captions = await getSubtitles({
+    const transcript = await getSubtitles({
       videoID,
     });
 
-    console.log("captions", captions);
+    console.log("captions", transcript);
 
     try {
       const { responseData, error } =
         message.AI === "gemini"
-          ? await generateWithGemini(message.apiKey, captions)
-          : await generateWithGroq(message.apiKey, captions);
+          ? await generateWithGemini(message.apiKey, transcript)
+          : await generateWithGroq(message.apiKey, transcript);
       chrome.runtime.sendMessage({
         type: ChromeMessageTypes.ClipResponse,
         data: responseData,
@@ -45,14 +45,16 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
         error: error.message,
       });
     }
-  } else if (message.type == ChromeMessageTypes.Summarize) {
-    console.log("Summarize message", message);
+  } else if (message.type == ChromeMessageTypes.Summary) {
     if (!message.videoId) return;
-    const captions = await getSubtitles({
+    const transcript = await getSubtitles({
       videoID: message.videoId,
     });
-    const response = await summarizeWithGemini(message.apiKey, captions);
-    console.log("Summary response", response);
+    const response = await summarizeWithGemini(message.apiKey, transcript);
+    chrome.runtime.sendMessage({
+      type: ChromeMessageTypes.SummaryResponse,
+      data: response,
+    });
   }
 });
 

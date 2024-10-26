@@ -1,7 +1,8 @@
 export const ChromeMessageTypes = {
   Clip: "clip",
   ClipResponse: "clip-response",
-  Summarize: "summarize",
+  Summary: "summarize",
+  SummaryResponse: "summarize-response",
 };
 
 export const Actions = {
