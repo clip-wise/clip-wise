@@ -1,0 +1,35 @@
+.api-key-input {
+  padding: 1rem;
+}
+
+.api-key-input p {
+  margin-bottom: 0.5rem;
+}
+
+.api-key-input input {
+  width: 94%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+}
+
+.api-key-input button {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.api-key-input button:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.api-key-input .error-message {
+  margin-top: 0.5rem;
+  color: #dc2626;
+}

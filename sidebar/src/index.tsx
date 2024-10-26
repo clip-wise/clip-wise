@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import YoutubeVideoId from '../utils/getYoutubeVideoId';
 import { useApiKey } from './hooks/useApiKey';
 import { ApiKeyInput } from './components/ApiKeyInput';
+import './SidePanelContent.css';
 
 const SidePanelContent = () => {
   const [activeTab, setActiveTab] = useState<chrome.tabs.Tab | null>(null);
@@ -58,33 +59,29 @@ const SidePanelContent = () => {
   }
 
   return (
-    <div className='p-4'>
-      <h1 className='mb-4 text-2xl font-bold'>ClipWise</h1>
+    <div className='side-panel-content'>
+      <h1 className='title'>ClipWise</h1>
       {error && (
-        <div
-          className='relative px-4 py-3 mb-4 text-red-700 bg-red-100 rounded border border-red-400'
-          role='alert'>
-          <strong className='font-bold'>Error: </strong>
-          <span className='block sm:inline'>{error}</span>
+        <div className='error-message' role='alert'>
+          <strong>Error: </strong>
+          <span>{error}</span>
         </div>
       )}
-      <div>
-        <p className='mb-4'>API Key is set for OpenAI. You're ready to go!</p>
-        <button
-          onClick={handleStart}
-          className='p-2 mb-2 w-full text-white bg-green-500 rounded'>
+      <div className='api-key-section'>
+        <p>API Key is set for OpenAI. You're ready to go!</p>
+        <button onClick={handleStart} className='start-button'>
           Start
         </button>
-        <button
-          onClick={clearApiKey}
-          className='p-2 w-full text-gray-700 bg-gray-300 rounded'>
+        <button onClick={clearApiKey} className='change-key-button'>
           Change API Key
         </button>
       </div>
-      <hr className='my-4' />
-      <div>
+      <hr className='divider' />
+      <div className='captions-section'>
         {captions.map((caption, index) => (
-          <p key={index}>{caption.text.slice(0, 50)}...</p>
+          <p key={index} className='caption-preview'>
+            {caption.text.slice(0, 50)}...
+          </p>
         ))}
       </div>
     </div>

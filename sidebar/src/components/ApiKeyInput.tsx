@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import './ApiKeyInput.css';
 interface ApiKeyInputProps {
   onSubmit: (apiKey: string) => void;
 }
@@ -38,22 +38,18 @@ export const ApiKeyInput: React.FC<ApiKeyInputProps> = ({ onSubmit }) => {
   };
 
   return (
-    <div>
-      <p className='mb-2'>Please enter your OpenAI API key:</p>
+    <div className='api-key-input'>
+      <p>Please enter your OpenAI API key:</p>
       <input
         type='text'
         value={apiKey}
         onChange={(e) => setApiKey(e.target.value)}
         placeholder='Enter API Key'
-        className='p-2 mb-4 w-full rounded border'
       />
-      <button
-        onClick={handleSubmit}
-        disabled={isVerifying}
-        className='p-2 w-full text-white bg-blue-500 rounded disabled:bg-blue-300'>
+      <button onClick={handleSubmit} disabled={isVerifying}>
         {isVerifying ? 'Verifying...' : 'Submit'}
       </button>
-      {error && <div className='mt-2 text-red-500'>{error}</div>}
+      {error && <div className='error-message'>{error}</div>}
     </div>
   );
 };
