@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="438" height="438" fill="none">
-    <path fill="#dbeafe" d="M0 0h438v438H0z" />
-    <path stroke="#1F1F1F" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"
-        d="M273.75 255.5c3.65-18.25 12.775-31.025 27.375-45.625C319.375 193.45 328.5 169.725 328.5 146a109.501 109.501 0 0 0-186.928-77.428A109.501 109.501 0 0 0 109.5 146c0 18.25 3.65 40.15 27.375 63.875C149.65 222.65 160.6 237.25 164.25 255.5m0 73h109.5m-91.25 73h73" />
-    <path stroke="#1F1F1F" stroke-linejoin="round" stroke-width="20" d="M194 147v41l79-41-79-41v41Z" />
-</svg>
