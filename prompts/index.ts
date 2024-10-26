@@ -18,7 +18,7 @@ Follow these guidelines when creating flashcards:
 
 1. Focus on key concepts, definitions, and important facts from the video.
 2. Keep questions clear and concise.
-3. Ensure answers are comprehensive but not overly long.
+3. Ensure answers are comprehensive but not overly long. The answer should not exceed 20 words.
 4. Include a variety of question types (e.g., fill-in-the-blank, multiple-choice, true/false, short answer).
 5. Avoid creating flashcards for trivial or unimportant information.
 6. Aim to create 5-10 flashcards, depending on the length and complexity of the video.

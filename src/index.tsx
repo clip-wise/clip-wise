@@ -14,7 +14,6 @@ import ReactMarkdown from "react-markdown";
 import { Clipboard, ClipboardCheck } from "lucide-react";
 import { useCopyToClipboard } from "./hooks/useCopyToClipboard";
 import FlashCard from "./components/FlashCard";
-import { de } from "@blocknote/core/types/src/i18n/locales";
 
 const fn = (skipTimes: SkipTime[]) => {
   if (!(window as any).skipTimesTimer) {
@@ -128,6 +127,29 @@ const SidePanelContent = () => {
     };
   }, [activeTab?.id]);
 
+  useEffect(() => {
+    const injectScript = async () => {
+      if (activeTab?.id) {
+        try {
+          await chrome.scripting.executeScript({
+            target: { tabId: activeTab.id },
+            files: ["scripts/content-script.js"],
+            world: "MAIN",
+          });
+          setError(null);
+        } catch (error) {
+          console.error("Error injecting script:", error);
+          setError(`An error occurred while starting the extension: ${error}`);
+        }
+      } else {
+        setError(
+          "Please navigate to a YouTube video page to use this extension."
+        );
+      }
+    };
+    injectScript();
+  }, [activeTab?.id]);
+
   const handleActionClip = async () => {
     const videoId = YoutubeVideoId(activeTab?.url || "");
     if (videoId) {
@@ -138,24 +160,6 @@ const SidePanelContent = () => {
       });
       setCaptions({ data: [] });
       setLoading(Actions.Clip);
-    }
-
-    if (activeTab?.id) {
-      try {
-        await chrome.scripting.executeScript({
-          target: { tabId: activeTab.id },
-          files: ["scripts/content-script.js"],
-          world: "MAIN",
-        });
-        setError(null);
-      } catch (error) {
-        console.error("Error injecting script:", error);
-        setError(`An error occurred while starting the extension: ${error}`);
-      }
-    } else {
-      setError(
-        "Please navigate to a YouTube video page to use this extension."
-      );
     }
   };
 
