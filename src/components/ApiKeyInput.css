@@ -7,17 +7,17 @@
 }
 
 .api-key-input input {
-  width: 100%;
+  width: 94%;
   padding: 0.5rem;
   margin-bottom: 1rem;
-  border: 1px solid #D1D5DB;
+  border: 1px solid #d1d5db;
   border-radius: 0.25rem;
 }
 
 .api-key-input button {
   width: 100%;
   padding: 0.5rem;
-  background-color: #3B82F6;
+  background-color: #3b82f6;
   color: white;
   border: none;
   border-radius: 0.25rem;
@@ -25,11 +25,11 @@
 }
 
 .api-key-input button:disabled {
-  background-color: #93C5FD;
+  background-color: #93c5fd;
   cursor: not-allowed;
 }
 
 .api-key-input .error-message {
   margin-top: 0.5rem;
-  color: #DC2626;
+  color: #dc2626;
 }
