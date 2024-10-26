@@ -97,7 +97,7 @@ const SidePanelContent = () => {
     };
   }, [activeTab?.id]);
 
-  const handleStart = async () => {
+  const handleActionClip = async () => {
     const videoId = YoutubeVideoId(activeTab?.url || "");
     if (videoId) {
       chrome.runtime.sendMessage({
@@ -127,18 +127,24 @@ const SidePanelContent = () => {
     }
   };
 
+  const handleActionSummary = () => {
+    const videoId = YoutubeVideoId(activeTab?.url || "");
+
+    chrome.runtime.sendMessage({ type: ChromeMessageTypes.Summarize, videoId });
+  };
+
   const handleActionClick = (action: string) => {
     if (action === Actions.Clip) {
-      handleStart();
+      handleActionClip();
       return;
     }
     if (action === Actions.Summary) {
-      chrome.runtime.sendMessage({ type: ChromeMessageTypes.Summarize });
+      handleActionSummary();
       return;
     }
 
     // Implement the logic for each action
-    console.log(`Action clicked: ${action}`);
+    console.log(`Missing Handler for the Action: <bold>${action}</bold>`);
     chrome.runtime.sendMessage({ type: action });
   };
 

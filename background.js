@@ -46,6 +46,7 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
       });
     }
   } else if (message.type == ChromeMessageTypes.Summarize) {
+    console.log("Summarize message", message);
     if (!message.videoId) return;
     const captions = await getSubtitles({
       videoID: message.videoId,
