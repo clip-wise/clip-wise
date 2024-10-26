@@ -3,6 +3,7 @@ import { getSubtitles } from "youtube-captions-scraper";
 import { generateWithGemini } from "./helpers/generateWithGemini";
 import { generateWithGroq } from "./helpers/generateWithGroq";
 import { summarizeWithGemini } from "./helpers/summarizeWithGemini";
+import { summarizeWithGroq } from "./helpers/summarizeWithGroq";
 import { AIOptions, ChromeMessageTypes } from "./constants";
 
 const isFirefoxLike =
@@ -52,7 +53,11 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
     const transcript = await getSubtitles({
       videoID: videoId,
     });
-    const response = await summarizeWithGemini(apiKey, transcript);
+    debugger;
+    const response =
+      ai === AIOptions.Gemini
+        ? await summarizeWithGemini(apiKey, transcript)
+        : await summarizeWithGroq(apiKey, transcript);
     chrome.runtime.sendMessage({
       type: ChromeMessageTypes.SummaryResponse,
       data: response,
@@ -82,12 +87,5 @@ chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
       tabId,
       enabled: false,
     });
-
-    try {
-      const response = await summarizeWithGemini(apiKey, captions);
-      console.log("Clip response", response);
-    } catch (error) {
-      console.log("Clip error", error);
-    }
   }
 });

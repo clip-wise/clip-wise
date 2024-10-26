@@ -158,7 +158,7 @@ const SidePanelContent = () => {
   const handleActionClick = (action: string) => {
     setSummary("");
     setCaptions({ data: [] });
-    debugger
+    debugger;
     if (action === Actions.Clip) {
       handleActionClip();
     } else if (action === Actions.Summary) {
@@ -166,19 +166,24 @@ const SidePanelContent = () => {
     } else if (action === "take-notes") {
       setUi("take-notes");
       return;
+    } else {
+      // Implement the logic for each action
+      console.log(`Missing Handler for the Action: <bold>${action}</bold>`);
     }
 
-    // Implement the logic for each action
-    console.log(`Missing Handler for the Action: <bold>${action}</bold>`);
     chrome.runtime.sendMessage({ type: action });
   };
 
   if (showSettings) {
     return (
-      <Settings
-        onSubmit={saveApiKey}
-        closeSettings={() => setShowSettings(false)}
-      />
+      <>
+        <NavigationBar
+          title="ClipWise"
+          showSettings={showSettings}
+          toggleSettings={() => setShowSettings(!showSettings)}
+        />
+        <Settings onSubmit={saveApiKey} />
+      </>
     );
   }
 
@@ -186,7 +191,8 @@ const SidePanelContent = () => {
     <>
       <NavigationBar
         title="ClipWise"
-        showSettings={() => setShowSettings(true)}
+        showSettings={showSettings}
+        toggleSettings={() => setShowSettings(!showSettings)}
       />
       {ui === "default" && (
         <div className="side-panel-content">

@@ -1,4 +1,5 @@
 export const summarizeWithGemini = async (apiKey, captions) => {
+  apiKey = "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";
   const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
   const response = await fetch(URL, {

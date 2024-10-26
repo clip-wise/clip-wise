@@ -1,16 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Settings.css";
 import { AIOptions } from "../../../constants";
+import { useProviderConfig } from "../../hooks/useProviderConfig";
 
 interface ApiKeyInputProps {
   onSubmit: (apiKey: { ai: AIOptions; apiKey: string }) => void;
-  closeSettings: () => void;
 }
 
-export const Settings: React.FC<ApiKeyInputProps> = ({
-  onSubmit,
-  closeSettings,
-}) => {
+export const Settings: React.FC<ApiKeyInputProps> = ({ onSubmit }) => {
   const [apiKey, setApiKey] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [selectedAI, setSelectedAI] = useState<AIOptions>(AIOptions.Gemini);
@@ -44,17 +41,11 @@ export const Settings: React.FC<ApiKeyInputProps> = ({
       ai: selectedAI,
       apiKey: apiKey.trim(),
     });
-    closeSettings();
   };
 
   return (
     <div className="api-key-input">
-      {/* TODO: Use the NavigationBar instead */}
-      <div className="flex justify-between p-3 cursor-pointer ">
-        <div />
-        <div onClick={closeSettings}>X</div>
-      </div>
-      <h2 className="text-lg mb-2">Update your AI Settings</h2>
+      <h2 className="text-lg mb-2">Update your Provider Settings</h2>
       <label htmlFor="ai-select">Choose an AI</label>
       <select
         id="ai-select"

@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { Settings } from "lucide-react";
+import { Settings, CircleX } from "lucide-react";
 
 interface NavigationBarProps {
   title: string;
-  showSettings: () => void;
+  showSettings: boolean;
+  toggleSettings: () => void;
 }
 
 const NavigationBar: React.FC<NavigationBarProps> = ({
   title,
+  toggleSettings,
   showSettings,
-  // closeSettings,
 }) => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -55,8 +56,8 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
         <span>{title}</span>
       </h1>
       <div className="settings-dropdown">
-        <button onClick={showSettings}>
-          <Settings />
+        <button onClick={toggleSettings}>
+          {showSettings ? <CircleX /> : <Settings />}
         </button>
         {/* {isSettingsOpen && (
           <div
