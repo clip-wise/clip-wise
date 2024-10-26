@@ -8,7 +8,7 @@ import ErrorMessage from "./components/ErrorMessage";
 import MainContent from "./components/MainContent";
 import { Captions, SkipTime } from "./types";
 import ProcessingIcon from "./components/processingIcon";
-import { ChromeMessageTypes } from "../constants";
+import { Actions, ChromeMessageTypes } from "../constants";
 
 const fn = (skipTimes: SkipTime[]) => {
   if (!(window as any).skipTimesTimer) {
@@ -124,11 +124,11 @@ const SidePanelContent = () => {
   };
 
   const handleActionClick = (action: string) => {
-    if (action === "clip") {
+    if (action === Actions.Clip) {
       handleStart();
       return;
     }
-    if (action === "summarize") {
+    if (action === Actions.Summary) {
       chrome.runtime.sendMessage({ type: ChromeMessageTypes.Summarize });
       return;
     }
