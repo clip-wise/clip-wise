@@ -182,6 +182,7 @@ const SidePanelContent = () => {
   };
 
   const handleActionClick = (action: string) => {
+    debugger;
     setSummary("");
     setCaptions({ data: [] });
     if (action === Actions.Clip) {

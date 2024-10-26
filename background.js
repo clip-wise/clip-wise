@@ -65,6 +65,7 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
       data: response,
     });
   } else if (type == ChromeMessageTypes.FlashCards) {
+    debugger;
     console.log("Flash cards", message);
     if (!videoId) return;
     const transcript = await getSubtitles({
