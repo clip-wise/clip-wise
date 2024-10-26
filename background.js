@@ -37,7 +37,10 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
             role: "user",
             parts: [
               {
-                text: "Read the given transcript and generate an array of start time and end time to skip the promotional content in the video. Respond with valid JSON.",
+                text: `
+sYou are a helpful learning assistant. You are provided with the transcript of a youtube video including the timestamps. Go over the transcript and identify the part of the script that is not educational. It may be promotions, unuseful talks or random unrelated information.
+With that in mind, I need to know the parts of the video that can be skipped while learning.
+Return an array of start and end times that can be skipped without affecting the overall watch quality. Respond with valid JSON.`,
               },
             ],
           },
@@ -47,6 +50,25 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
             topP: 0.95,
             maxOutputTokens: 8192,
             responseMimeType: "application/json",
+            responseSchema: {
+              type: "object",
+              properties: {
+                response: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      start: {
+                        type: "number",
+                      },
+                      end: {
+                        type: "number",
+                      },
+                    },
+                  },
+                },
+              },
+            },
           },
           contents: [
             {
