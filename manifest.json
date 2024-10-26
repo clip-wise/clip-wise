@@ -4,14 +4,9 @@
   "version": "1.0",
   "name": "ClipWise",
   "description": "A chrome extension that simplifies the learning process on YouTube",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", ""],
   "author": "",
-  "content_scripts": [
-    {
-      "matches": ["*://www.youtube.com/*"],
-      "js": ["./src/content-script.tsx"]
-    }
-  ],
+  "host_permissions": ["https://*/*"],
   "chromium:action": {
     "default_title": "Open Side Panel"
   },
