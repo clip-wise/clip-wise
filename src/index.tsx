@@ -1,3 +1,4 @@
+// @ts-ignore
 import React, { useEffect, useState } from "react";
 import YoutubeVideoId from "./utils/getYoutubeVideoId";
 import { useProviderConfig } from "./hooks/useProviderConfig";
@@ -28,10 +29,11 @@ const fn = (skipTimes: SkipTime[]) => {
       if (skipTimes) {
         const skipTime = skipTimes.find(
           (skipTime) =>
-            skipTime.start_time <= currentTime && skipTime.end_time >= currentTime
+            skipTime.start <= currentTime &&
+            skipTime.end >= currentTime
         );
         if (skipTime) {
-          (video as any)?.seekTo(skipTime.end_time);
+          (video as any)?.seekTo(skipTime.end);
         }
       }
     }, 1000);
@@ -255,11 +257,21 @@ const SidePanelContent = () => {
                 <p className="mr-2">Processing...</p>
               </div>
             ) : (
-              captions.data.map((caption, index) => (
-                <p key={index} className="mb-2">
-                  {JSON.stringify(caption)}...
-                </p>
-              ))
+              <div>
+                {captions?.data?.length > 0 && (
+                  <p className="text-xl">Skipped Interval</p>
+                )}
+                <ul>
+                  {captions.data.map((caption: any, index) => (
+                    <li key={index} className="mb-2">
+                      <span className="text-lg">Starts = </span>
+                      <span>{caption.start} seconds;&nbsp;</span>
+                      <span className="text-lg">Ends = </span>
+                      <span>{caption.end} seconds;&nbsp;</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )}
             {captions.error && (
               <p className="italic text-red-600">{captions.error}</p>
