@@ -11,6 +11,8 @@ import ProcessingIcon from "./components/ProcessIcon";
 import { Actions, ChromeMessageTypes } from "../constants";
 import TakeNotes from "./components/TakeNotes";
 import ReactMarkdown from "react-markdown";
+import { Clipboard, ClipboardCheck } from "lucide-react";
+import { useCopyToClipboard } from "./hooks/useCopyToClipboard";
 
 const fn = (skipTimes: SkipTime[]) => {
   if (!(window as any).skipTimesTimer) {
@@ -47,8 +49,9 @@ const SidePanelContent = () => {
   const [showSettings, setShowSettings] = useState(false);
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState<string | undefined>();
-
+  const [copiedText, copy] = useCopyToClipboard();
   const [ui, setUi] = useState<"take-notes" | "default">("default");
+  const [showCopied, setShowCopied] = useState(false);
 
   const setSkipTimes = async (activeTabId: number, skipTimes: SkipTime[]) => {
     await chrome.scripting.executeScript({
@@ -174,6 +177,12 @@ const SidePanelContent = () => {
     chrome.runtime.sendMessage({ type: action });
   };
 
+  const handleCopyToClipboard = () => {
+    copy(summary);
+    setShowCopied(true);
+    setTimeout(() => setShowCopied(false), 800);
+  };
+
   if (showSettings) {
     return (
       <>
@@ -221,7 +230,19 @@ const SidePanelContent = () => {
           </div>
           {summary && (
             <div className="mt-1">
-              <h2 className="text-bold text-lg">Summary of the Video</h2>
+              <div className="flex justify-start gap-x-2">
+                <h2 className="text-bold text-lg">Summary of the Video</h2>
+                <span>
+                  {!showCopied ? (
+                    <Clipboard
+                      onClick={handleCopyToClipboard}
+                      className="cursor-pointer"
+                    />
+                  ) : (
+                    <ClipboardCheck color="green" />
+                  )}
+                </span>
+              </div>
               <ReactMarkdown>{summary}</ReactMarkdown>
             </div>
           )}
