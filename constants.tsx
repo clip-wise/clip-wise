@@ -3,6 +3,10 @@ export const ChromeMessageTypes = {
   ClipResponse: "clip-response",
   Summary: "summarize",
   SummaryResponse: "summarize-response",
+  TakeNotes: "take-notes",
+  TakeNotesResponse: "take-notes-response",
+  FlashCards: "flashcards",
+  FlashCardsResponse: "flashcards-response",
 };
 
 export const Actions = {

@@ -1,6 +1,8 @@
 import React from "react";
 import ActionButtons from "../ActionButtons";
-
+import { useState, useEffect } from "react";
+import { Flashcard, MessageData } from "../../types";
+import { ChromeMessageTypes } from "../../../constants";
 interface MainContentProps {
   onActionClick: (action: string) => void;
   disableOptions: boolean;
@@ -10,13 +12,13 @@ const MainContent: React.FC<MainContentProps> = ({
   onActionClick,
   disableOptions,
 }) => (
-  <div>
-    <div className="pb-2">
-      <h2 className="text-bold text-lg">Welcome to ClipWise!</h2>
-      <span>
+  <div className="space-y-4">
+    <div>
+      <h2 className="mb-2 text-lg font-bold">Welcome to ClipWise!</h2>
+      <p>
         This extension will help you skip the trivial parts of a video and focus
         on learning.
-      </span>
+      </p>
     </div>
     <ActionButtons
       onActionClick={onActionClick}
