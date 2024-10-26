@@ -28,10 +28,10 @@ const fn = (skipTimes: SkipTime[]) => {
       if (skipTimes) {
         const skipTime = skipTimes.find(
           (skipTime) =>
-            skipTime.start <= currentTime && skipTime.end >= currentTime
+            skipTime.start_time <= currentTime && skipTime.end_time >= currentTime
         );
         if (skipTime) {
-          (video as any)?.seekTo(skipTime.end);
+          (video as any)?.seekTo(skipTime.end_time);
         }
       }
     }, 1000);
@@ -78,8 +78,8 @@ const SidePanelContent = () => {
     if (message?.data?.length !== 0) {
       const responseData = (message.data?.response || message.data).map(
         (v: any) => ({
-          start: parseFloat(v.start),
-          end: parseFloat(v.end),
+          start: parseFloat(v.start_time),
+          end: parseFloat(v.end_time),
         })
       );
       setCaptions({
@@ -191,7 +191,6 @@ const SidePanelContent = () => {
   };
 
   const handleActionClick = (action: string) => {
-    debugger;
     setSummary("");
     setCaptions({ data: [] });
     setError(null);
@@ -251,9 +250,9 @@ const SidePanelContent = () => {
           />
           <div className="mt-4">
             {loading ? (
-              <div className="flex justify-center items-center">
-                <p className="mr-2">Processing...</p>
+              <div className="flex flex-col justify-start items-center gap-y-2">
                 <ProcessingIcon />
+                <p className="mr-2">Processing...</p>
               </div>
             ) : (
               captions.data.map((caption, index) => (
@@ -290,7 +289,8 @@ const SidePanelContent = () => {
         <div className="flex-1 p-4">
           <button
             onClick={() => setUi("default")}
-            className="px-4 py-2 mb-4 bg-gray-200 rounded">
+            className="px-4 py-2 mb-4 bg-gray-200 rounded"
+          >
             ← Back
           </button>
           <p className="mb-4">Take notes in this rich text experience.</p>
@@ -304,7 +304,8 @@ const SidePanelContent = () => {
           <button
             onClick={() => setUi("default")}
             className="px-4 py-2 mb-4 bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={loading === Actions.FlashCards}>
+            disabled={loading === Actions.FlashCards}
+          >
             ← Back
           </button>
           <FlashCard

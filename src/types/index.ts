@@ -1,4 +1,4 @@
-export type SkipTime = { start: number; end: number };
+export type SkipTime = { start_time: number; end_time: number };
 
 export interface Captions {
   data: SkipTime[];
