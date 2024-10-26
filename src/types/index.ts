@@ -10,3 +10,11 @@ export interface MessageData {
   data?: any;
   response?: any;
 }
+
+export type Flashcard = {
+  question: string;
+  answer: string;
+  context: string;
+  timestamp: string;
+}
+

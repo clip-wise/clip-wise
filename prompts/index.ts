@@ -1,11 +1,11 @@
-export const generateFlashcardPrompt = `
+export const flashcardPrompt = `
 You are tasked with creating flashcards based on a YouTube video transcript to help learners effectively understand and retain the content. Your goal is to generate a structured output in JSON format containing an array of flashcard items.
 
 First, you will be provided with the YouTube video transcript:
 
-<youtube_transcript>
+<transcript>
 {{TRANSCRIPT}}
-</youtube_transcript>
+</transcript>
 
 Analyze the transcript and create flashcards based on the following structure for each flashcard item:
 
@@ -21,7 +21,7 @@ Follow these guidelines when creating flashcards:
 3. Ensure answers are comprehensive but not overly long.
 4. Include a variety of question types (e.g., fill-in-the-blank, multiple-choice, true/false, short answer).
 5. Avoid creating flashcards for trivial or unimportant information.
-6. Aim to create 10-15 flashcards, depending on the length and complexity of the video.
+6. Aim to create 5-10 flashcards, depending on the length and complexity of the video.
 
 Analyze the transcript and create flashcards that cover the main topics and key points discussed in the video. If the transcript lacks clear timestamps, you may omit the "timestamp" field from the flashcard items.
 

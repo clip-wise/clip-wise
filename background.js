@@ -4,6 +4,8 @@ import { generateWithGemini } from "./helpers/generateWithGemini";
 import { generateWithGroq } from "./helpers/generateWithGroq";
 import { summarizeWithGemini } from "./helpers/summarizeWithGemini";
 import { summarizeWithGroq } from "./helpers/summarizeWithGroq";
+import { flashcardsWithGemini } from "./helpers/flashcardsWithGemini";
+import { flashcardsWithGroq } from "./helpers/flashcardsWithGroq";
 import { AIOptions, ChromeMessageTypes } from "./constants";
 
 const isFirefoxLike =
@@ -60,6 +62,20 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
         : await summarizeWithGroq(apiKey, transcript);
     chrome.runtime.sendMessage({
       type: ChromeMessageTypes.SummaryResponse,
+      data: response,
+    });
+  } else if (message.type == ChromeMessageTypes.FlashCards) {
+    console.log("Flash cards", message);
+    if (!message.videoId) return;
+    const transcript = await getSubtitles({
+      videoID: message.videoId,
+    });
+    const response =
+      ai === AIOptions.Gemini
+        ? await flashcardsWithGemini(message.apiKey, transcript)
+        : await flashcardsWithGroq(message.apiKey, transcript);
+    chrome.runtime.sendMessage({
+      type: ChromeMessageTypes.FlashCardsResponse,
       data: response,
     });
   }

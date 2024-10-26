@@ -6,11 +6,12 @@ import "./SidePanelContent.css";
 import NavigationBar from "./components/NavigationBar/index";
 import ErrorMessage from "./components/ErrorMessage";
 import MainContent from "./components/MainContent";
-import { Captions, SkipTime } from "./types";
+import { Captions, Flashcard, SkipTime } from "./types";
 import ProcessingIcon from "./components/ProcessIcon";
 import { Actions, ChromeMessageTypes } from "../constants";
 import TakeNotes from "./components/TakeNotes";
 import ReactMarkdown from "react-markdown";
+import FlashCard from "./components/FlashCard";
 
 const fn = (skipTimes: SkipTime[]) => {
   if (!(window as any).skipTimesTimer) {
@@ -46,9 +47,12 @@ const SidePanelContent = () => {
   const { providerConfig, hasApiKey, saveApiKey } = useProviderConfig();
   const [showSettings, setShowSettings] = useState(false);
   const [summary, setSummary] = useState("");
+  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [loading, setLoading] = useState<string | undefined>();
 
-  const [ui, setUi] = useState<"take-notes" | "default">("default");
+  const [ui, setUi] = useState<"take-notes" | "flashcards" | "default">(
+    "default"
+  );
 
   const setSkipTimes = async (activeTabId: number, skipTimes: SkipTime[]) => {
     await chrome.scripting.executeScript({
@@ -97,11 +101,18 @@ const SidePanelContent = () => {
     setLoading(undefined);
   };
 
+  const handleFlashCardsResponse = (message: any) => {
+    setFlashcards(message.data);
+    setLoading(undefined);
+  };
+
   const handleCallback = async (message: any, sender: any, reply: any) => {
     if (message.type === ChromeMessageTypes.ClipResponse) {
       handleClipResponse(message);
     } else if (message.type === ChromeMessageTypes.SummaryResponse) {
       handleSummaryResponse(message);
+    } else if (message.type === ChromeMessageTypes.FlashCardsResponse) {
+      handleFlashCardsResponse(message);
     }
   };
 
@@ -155,6 +166,17 @@ const SidePanelContent = () => {
     setLoading(Actions.Summary);
   };
 
+  const handleActionFlashCards = () => {
+    const videoId = YoutubeVideoId(activeTab?.url || "");
+    chrome.runtime.sendMessage({
+      type: ChromeMessageTypes.FlashCards,
+      videoId,
+      providerConfig,
+    });
+    setLoading(Actions.FlashCards);
+    setUi(Actions.FlashCards as "flashcards");
+  };
+
   const handleActionClick = (action: string) => {
     setSummary("");
     setCaptions({ data: [] });
@@ -163,8 +185,11 @@ const SidePanelContent = () => {
       handleActionClip();
     } else if (action === Actions.Summary) {
       handleActionSummary();
-    } else if (action === "take-notes") {
-      setUi("take-notes");
+    } else if (action === Actions.TakeNotes) {
+      setUi(Actions.TakeNotes as "take-notes");
+      return;
+    } else if (action === Actions.FlashCards) {
+      handleActionFlashCards();
       return;
     } else {
       // Implement the logic for each action
@@ -198,21 +223,23 @@ const SidePanelContent = () => {
         toggleSettings={() => setShowSettings(!showSettings)}
       />
       {ui === "default" && (
-        <div className="side-panel-content">
+        <div className="overflow-y-auto flex-1 p-4">
           {error && <ErrorMessage message={error} />}
           <MainContent
             onActionClick={handleActionClick}
             disableOptions={!!loading}
           />
-          <div className="captions-section">
+          <div className="mt-4">
             {loading ? (
-              <div className="processing">
-                <p>Processing...</p>
+              <div className="flex justify-center items-center">
+                <p className="mr-2">Processing...</p>
                 <ProcessingIcon />
               </div>
             ) : (
               captions.data.map((caption, index) => (
-                <p key={index}>{JSON.stringify(caption)}...</p>
+                <p key={index} className="mb-2">
+                  {JSON.stringify(caption)}...
+                </p>
               ))
             )}
             {captions.error && (
@@ -220,22 +247,38 @@ const SidePanelContent = () => {
             )}
           </div>
           {summary && (
-            <div className="mt-1">
-              <h2 className="text-bold text-lg">Summary of the Video</h2>
+            <div className="mt-4">
+              <h2 className="mb-2 text-lg font-bold">Summary of the Video</h2>
               <ReactMarkdown>{summary}</ReactMarkdown>
             </div>
           )}
         </div>
       )}
       {ui === "take-notes" && (
-        <div className="side-panel-content pl-0">
-          <button onClick={() => setUi("default")} className="px-4">
+        <div className="flex-1 p-4">
+          <button
+            onClick={() => setUi("default")}
+            className="px-4 py-2 mb-4 bg-gray-200 rounded">
             ← Back
           </button>
-          <p className="px-4 mb-2">Take notes in this rich text experience.</p>
-          <div className="border">
+          <p className="mb-4">Take notes in this rich text experience.</p>
+          <div className="rounded border border-gray-300">
             <TakeNotes url={activeTab?.url || ""} />
           </div>
+        </div>
+      )}
+      {ui === "flashcards" && (
+        <div className="flex-1 p-4">
+          <button
+            onClick={() => setUi("default")}
+            className="px-4 py-2 mb-4 bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={loading === Actions.FlashCards}>
+            ← Back
+          </button>
+          <FlashCard
+            flashcards={flashcards}
+            isLoading={loading === Actions.FlashCards}
+          />
         </div>
       )}
     </>
