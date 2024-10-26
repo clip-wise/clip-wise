@@ -47,10 +47,16 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
-  if (!tab.url) return;
+  if (!tab.url) {
+    await chrome.sidePanel.setOptions({
+      tabId,
+      enabled: false,
+    });
+    return false;
+  }
   const url = new URL(tab.url);
   // Enables the side panel on google.com
-  if (url.origin === "https://www.youtube.com") {
+  if (url?.origin === "https://www.youtube.com") {
     await chrome.sidePanel.setOptions({
       tabId,
       path: "side_panel/default_path.html",
