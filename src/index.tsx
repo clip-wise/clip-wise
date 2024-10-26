@@ -158,6 +158,7 @@ const SidePanelContent = () => {
   const handleActionClick = (action: string) => {
     setSummary("");
     setCaptions({ data: [] });
+    debugger
     if (action === Actions.Clip) {
       handleActionClip();
     } else if (action === Actions.Summary) {

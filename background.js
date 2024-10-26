@@ -20,12 +20,12 @@ if (isFirefoxLike) {
 }
 
 chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
-  const { type, providerConfig, videoID } = message;
-  const { ai, apiKey } = providerConfig;
+  const { type, providerConfig, videoId } = message;
+  const { ai, apiKey } = providerConfig || {};
 
   if (type == ChromeMessageTypes.Clip && videoId) {
     const transcript = await getSubtitles({
-      videoID,
+      videoID: videoId,
     });
 
     console.log("captions", transcript);
