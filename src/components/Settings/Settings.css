@@ -14,7 +14,6 @@
 .api-key-input button {
   width: 100%;
   padding: 0.5rem;
-  background-color: #ffa9a9;
   color: white;
   border: none;
   border-radius: 0.25rem;
@@ -22,7 +21,6 @@
 }
 
 .api-key-input button:disabled {
-  background-color: #ffa9a9cc;
   cursor: not-allowed;
 }
 

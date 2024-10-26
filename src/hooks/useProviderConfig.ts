@@ -17,6 +17,7 @@ export const useProviderConfig = () => {
 
   useEffect(() => {
     const storedConfig = localStorage.getItem(LOCAL_STORAGE_KEY_LLM_CONFIG);
+    console.log("storedConfig", storedConfig);
     if (storedConfig) {
       const config: ProviderConfig = JSON.parse(storedConfig);
       setProviderConfig(config);

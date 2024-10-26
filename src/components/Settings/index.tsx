@@ -1,18 +1,20 @@
 import React, { useState } from "react";
-import "./ApiKeyInput.css";
+import "./Settings.css";
 import { AIOptions } from "../../../constants";
 
 interface ApiKeyInputProps {
   onSubmit: (apiKey: { ai: AIOptions; apiKey: string }) => void;
+  closeSettings: () => void;
 }
 
-const ApiKeyInput: React.FC<ApiKeyInputProps> = ({ onSubmit }) => {
+export const Settings: React.FC<ApiKeyInputProps> = ({
+  onSubmit,
+  closeSettings,
+}) => {
   const [apiKey, setApiKey] = useState<string>("");
-  // const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedAI, setSelectedAI] = useState<AIOptions | undefined>(
-    undefined
-  );
+  const [selectedAI, setSelectedAI] = useState<AIOptions>(AIOptions.Gemini);
+
   // const verifyApiKey = async (key: string): Promise<boolean> => {
   //   setIsVerifying(true);
   //   setError(null);
@@ -37,20 +39,20 @@ const ApiKeyInput: React.FC<ApiKeyInputProps> = ({ onSubmit }) => {
   // };
 
   const handleSubmit = async () => {
-    // const isValid = await verifyApiKey(apiKey);
-    // if (isValid) {
     if (!selectedAI || !apiKey) return;
     onSubmit({
       ai: selectedAI,
       apiKey,
     });
-    // } else {
-    // setError('Invalid API key. Please check and try again.');
-    // }
   };
 
   return (
     <div className="api-key-input">
+      {/* TODO: Use the NavigationBar instead */}
+      <div className="flex justify-between p-3 cursor-pointer ">
+        <div />
+        <div onClick={closeSettings}>X</div>
+      </div>
       <h2 className="text-lg mb-2">Update your AI Settings</h2>
       <label htmlFor="ai-select">Choose an AI</label>
       <select
@@ -72,12 +74,14 @@ const ApiKeyInput: React.FC<ApiKeyInputProps> = ({ onSubmit }) => {
         placeholder="Enter API Key"
         className="border border-r-2 mb-2"
       />
-      <button onClick={handleSubmit} disabled={!selectedAI || !apiKey}>
+      <button
+        className="bg-red-400 disabled:bg-gray-300"
+        onClick={handleSubmit}
+        disabled={!selectedAI || !apiKey}
+      >
         Submit
       </button>
       {error && <div className="error-message">{error}</div>}
     </div>
   );
 };
-
-export default ApiKeyInput;
