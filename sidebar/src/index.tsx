@@ -7,7 +7,6 @@ import "./SidePanelContent.css";
 type SkipTime = { start: number; end: number };
 
 const fn = (skipTimes: SkipTime[]) => {
-  debugger;
   if (!(window as any).skipTimesTimer) {
     (window as any).skipTimes = skipTimes;
     (window as any).skipTimesTimer = setInterval(() => {
