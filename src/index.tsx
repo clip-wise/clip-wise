@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import YoutubeVideoId from "./utils/getYoutubeVideoId";
-import { useApiKey } from "./hooks/useApiKey";
+import { useProviderConfig } from "./hooks/useApiKey";
 import ApiKeyInput from "./components/ApiKeyInput/index";
 import "./SidePanelContent.css";
 import NavigationBar from "./components/NavigationBar/index";
@@ -43,7 +43,8 @@ const SidePanelContent = () => {
     error: "",
   });
   const [error, setError] = useState<string | null>(null);
-  const { apiKey, hasApiKey, saveApiKey, clearApiKey } = useApiKey();
+  const { providerConfig, hasApiKey, saveApiKey, clearApiKey } =
+    useProviderConfig();
   const [summary, setSummary] = useState("");
   const [loading, setLoading] = useState<string | undefined>();
 
@@ -118,7 +119,7 @@ const SidePanelContent = () => {
       chrome.runtime.sendMessage({
         type: ChromeMessageTypes.Clip,
         videoId,
-        apiKey,
+        providerConfig,
       });
       setCaptions({ data: [] });
       setLoading(Actions.Clip);
@@ -149,7 +150,7 @@ const SidePanelContent = () => {
     chrome.runtime.sendMessage({
       type: ChromeMessageTypes.Summary,
       videoId,
-      apiKey,
+      providerConfig,
     });
     setLoading(Actions.Summary);
   };

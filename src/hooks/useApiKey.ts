@@ -1,35 +1,41 @@
 import { useState, useEffect } from "react";
+import { AIOptions } from "../../constants";
 
 interface ProviderConfig {
-  name: "Google Gemini";
+  ai: AIOptions;
   apiKey: string;
 }
 
-export const useApiKey = () => {
-  const [apiKey, setApiKey] = useState<string>("");
+const LOCAL_STORAGE_KEY_LLM_CONFIG = "llmConfig";
+
+export const useProviderConfig = () => {
+  const [providerConfig, setProviderConfig] = useState<ProviderConfig>({
+    ai: AIOptions.Gemini,
+    apiKey: "",
+  });
   const [hasApiKey, setHasApiKey] = useState<boolean>(false);
 
   useEffect(() => {
-    const storedConfig = localStorage.getItem("llmConfig");
+    const storedConfig = localStorage.getItem(LOCAL_STORAGE_KEY_LLM_CONFIG);
     if (storedConfig) {
       const config: ProviderConfig = JSON.parse(storedConfig);
-      setApiKey(config.apiKey);
+      setProviderConfig(config);
       setHasApiKey(true);
     }
   }, []);
 
-  const saveApiKey = (key: string) => {
-    const config: ProviderConfig = { name: "Google Gemini", apiKey: key };
-    localStorage.setItem("llmConfig", JSON.stringify(config));
-    setApiKey(key);
+  const saveApiKey = ({ ai, apiKey }: { ai: AIOptions; apiKey: string }) => {
+    const config: ProviderConfig = { ai, apiKey };
+    localStorage.setItem(LOCAL_STORAGE_KEY_LLM_CONFIG, JSON.stringify(config));
+    setProviderConfig(config);
     setHasApiKey(true);
   };
 
   const clearApiKey = () => {
-    localStorage.removeItem("llmConfig");
-    setApiKey("");
+    localStorage.removeItem(LOCAL_STORAGE_KEY_LLM_CONFIG);
+    setProviderConfig({ ai: AIOptions.Gemini, apiKey: "" });
     setHasApiKey(false);
   };
 
-  return { apiKey, hasApiKey, saveApiKey, clearApiKey };
+  return { providerConfig, hasApiKey, saveApiKey, clearApiKey };
 };

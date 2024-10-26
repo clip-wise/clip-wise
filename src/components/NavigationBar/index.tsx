@@ -58,7 +58,11 @@ const NavigationBar: React.FC<NavigationBarProps> = ({
           <Settings />
         </button>
         {isSettingsOpen && (
-          <div className={`dropdown-content ${isSettingsOpen ? "open" : ""}`}>
+          <div
+            className={`dropdown-content ${
+              isSettingsOpen ? "open" : ""
+            } min-w-44 p-2`}
+          >
             <button onClick={onClearApiKey}>Change API Key</button>
           </div>
         )}

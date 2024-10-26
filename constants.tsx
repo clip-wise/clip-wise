@@ -11,3 +11,8 @@ export const Actions = {
   FlashCards: "flashcards",
   Summary: "summary",
 };
+
+export enum AIOptions {
+  Gemini = "gemini",
+  Groq = "groq",
+}

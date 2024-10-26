@@ -3,7 +3,7 @@ import { getSubtitles } from "youtube-captions-scraper";
 import { generateWithGemini } from "./helpers/generateWithGemini";
 import { generateWithGroq } from "./helpers/generateWithGroq";
 import { summarizeWithGemini } from "./helpers/summarizeWithGemini";
-import { ChromeMessageTypes } from "./constants";
+import { AIOptions, ChromeMessageTypes } from "./constants";
 
 const isFirefoxLike =
   process.env.EXTENSION_PUBLIC_BROWSER === "firefox" ||
@@ -20,8 +20,10 @@ if (isFirefoxLike) {
 }
 
 chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
-  if (message.type == ChromeMessageTypes.Clip && message.videoId) {
-    const videoID = message.videoId;
+  const { type, providerConfig, videoID } = message;
+  const { ai, apiKey } = providerConfig;
+
+  if (type == ChromeMessageTypes.Clip && videoId) {
     const transcript = await getSubtitles({
       videoID,
     });
@@ -30,9 +32,9 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
 
     try {
       const { responseData, error } =
-        message.AI === "gemini"
-          ? await generateWithGemini(message.apiKey, transcript)
-          : await generateWithGroq(message.apiKey, transcript);
+        ai === AIOptions.Gemini
+          ? await generateWithGemini(apiKey, transcript)
+          : await generateWithGroq(apiKey, transcript);
       chrome.runtime.sendMessage({
         type: ChromeMessageTypes.ClipResponse,
         data: responseData,
@@ -45,12 +47,12 @@ chrome.runtime.onMessage.addListener(async function (message, sender, reply) {
         error: error.message,
       });
     }
-  } else if (message.type == ChromeMessageTypes.Summary) {
-    if (!message.videoId) return;
+  } else if (type == ChromeMessageTypes.Summary) {
+    if (!videoId) return;
     const transcript = await getSubtitles({
-      videoID: message.videoId,
+      videoID: videoId,
     });
-    const response = await summarizeWithGemini(message.apiKey, transcript);
+    const response = await summarizeWithGemini(apiKey, transcript);
     chrome.runtime.sendMessage({
       type: ChromeMessageTypes.SummaryResponse,
       data: response,
@@ -82,7 +84,7 @@ chrome.tabs.onUpdated.addListener(async (tabId, info, tab) => {
     });
 
     try {
-      const response = await summarizeWithGemini(message.apiKey, captions);
+      const response = await summarizeWithGemini(apiKey, captions);
       console.log("Clip response", response);
     } catch (error) {
       console.log("Clip error", error);
