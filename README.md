@@ -8,6 +8,7 @@
 - [ ] Try and improve the prompt
 - [ ] Make it available also for firefox
 - [ ] Fix: The sidebar closes when switching to a different tab
+- [ ] Remove //@ts-ignore and fix the issue.
 
 ## Available Scripts
 
