@@ -2,6 +2,12 @@
 
 > A chrome extension that simplifies the learning process on YouTube
 
+## TODO
+- [ ] Convert the codebase completely to typescript
+- [ ] Use tailwindcss for styling and remove the custom css
+- [ ] Try and improve the prompt
+- [ ] Make it available also for firefox
+
 ## Available Scripts
 
 In the project directory, you can run the following scripts:
