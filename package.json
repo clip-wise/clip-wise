@@ -4,9 +4,9 @@
     "type": "git",
     "url": "https://github.com/yc24-youtubefocus/clip-wise"
   },
-  "name": "clip-wise",
+  "name": "clip-wise-beta",
   "description": "A chrome extension that simplifies the learning process on YouTube",
-  "version": "0.0.1",
+  "version": "0.0.1-beta",
   "keywords": [
     "extension",
     "browser-extension",

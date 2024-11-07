@@ -1,12 +1,12 @@
 {
   "$schema": "https://json.schemastore.org/chrome-manifest.json",
   "manifest_version": 3,
-  "version": "1.0",
-  "name": "ClipWise",
-  "description": "A chrome extension that simplifies the learning process on YouTube",
+  "version": "1.0.0",
+  "name": "ClipWiseBETA",
+  "description": "THIS EXTENSION IS FOR BETA TESTING: A chrome extension that simplifies the learning process on YouTube",
   "permissions": ["activeTab", "scripting", "tabs"],
   "author": "",
-  "host_permissions": ["https://*/*"],
+  "host_permissions": ["https://www.youtube.com/watch?v=*"],
   "chromium:action": {
     "default_title": "Open Side Panel"
   },
