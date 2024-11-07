@@ -7,6 +7,7 @@
 - [ ] Use tailwindcss for styling and remove the custom css
 - [ ] Try and improve the prompt
 - [ ] Make it available also for firefox
+- [ ] Fix: The sidebar closes when switching to a different tab
 
 ## Available Scripts
 
