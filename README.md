@@ -9,6 +9,10 @@
 - [ ] Make it available also for firefox
 - [ ] Fix: The sidebar closes when switching to a different tab
 - [ ] Remove //@ts-ignore and fix the issue.
+- [ ] Handle and display error when there is no transcript available for the video 
+- [ ] Fix: Input field not working for entering the API key for Gemini AI
+- [ ] Add the common loader for flashcards
+- [ ] Inform the user that they cannot do anything without an API key, whenever they try to use some feature, redirect them to the settings page with a message. 
 
 ## Available Scripts
 
